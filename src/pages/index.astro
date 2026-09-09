@@ -1,0 +1,33 @@
+---
+import { getEntry } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Hero from "../components/product/Hero.astro";
+import Problem from "../components/product/Problem.astro";
+import HowItWorks from "../components/product/HowItWorks.astro";
+import FamilyStory from "../components/product/FamilyStory.astro";
+import WhatsInside from "../components/product/WhatsInside.astro";
+import FeaturedAdventure from "../components/product/FeaturedAdventure.astro";
+import Faq from "../components/product/Faq.astro";
+import NewsletterSignup from "../components/product/NewsletterSignup.astro";
+
+// For launch, the homepage IS the Around the World landing page, featuring
+// Norway. When product #2 arrives, this becomes a brand home and each product
+// moves to its own route (e.g. /around-the-world) — the sections below don't
+// change, only where they're mounted.
+const productEntry = await getEntry("products", "around-the-world");
+const countryEntry = await getEntry("countries", "norway");
+
+const product = productEntry.data;
+const country = countryEntry.data;
+---
+
+<BaseLayout>
+  <Hero product={product} country={country} />
+  <Problem product={product} country={country} />
+  <HowItWorks product={product} country={country} />
+  <FamilyStory country={country} />
+  <WhatsInside product={product} />
+  <FeaturedAdventure adventure={country} />
+  <Faq product={product} />
+  <NewsletterSignup />
+</BaseLayout>

@@ -1,0 +1,325 @@
+---
+import Button from "../ui/Button.astro";
+import { Image } from "astro:assets";
+import { productImage } from "../../lib/productImages";
+import { checkoutUrl, isCheckoutReady } from "../../lib/links";
+
+import nightScene from "../../assets/scenery/fa-night-scene-v3.webp";
+import compass from "../../assets/scenery/fa-compass.png";
+import flag from "../../assets/scenery/fa-flag.png";
+import icon1 from "../../assets/scenery/fa-icon-1.png";
+import icon2 from "../../assets/scenery/fa-icon-2.png";
+import icon3 from "../../assets/scenery/fa-icon-3.png";
+import icon4 from "../../assets/scenery/fa-icon-4.png";
+import icon5 from "../../assets/scenery/fa-icon-5.png";
+
+const { adventure } = Astro.props;
+const priceStr = adventure.price.toFixed(2);
+const buyHref = checkoutUrl(adventure.checkoutUrl);
+const buyReady = isCheckoutReady(adventure.checkoutUrl);
+// The paper collage in the artwork is a real, swappable portrait photo slot.
+const featuredImage = productImage(adventure.images?.featured);
+
+const highlights = [
+  { art: icon1, label: "Nature & wildlife" },
+  { art: icon2, label: "Culture & traditions" },
+  { art: icon3, label: "Simple, tasty recipes" },
+  { art: icon4, label: "Creative crafts" },
+  { art: icon5, label: "Games & activities" },
+];
+---
+
+<section id="pricing" class="fa">
+  <Image class="scene" src={nightScene} alt="" widths={[1100, 1672, 2200]}
+         sizes="100vw" aria-hidden="true" />
+
+  <div class="inner">
+    <div class="media">
+      {featuredImage && (
+        <Image class="pack" src={featuredImage}
+               alt={`What's inside the ${adventure.name} adventure pack`}
+               widths={[450, 700, 900]} sizes="(max-width: 900px) 78vw, 36vw" />
+      )}
+    </div>
+
+    <div class="copy">
+      <p class="pill">
+        <Image class="compass" src={compass} alt="" widths={[38, 76]} sizes="38px" aria-hidden="true" />
+        <span>Featured adventure</span>
+      </p>
+
+      <h2 class="title">
+        Explore {adventure.name}
+        <Image class="flag" src={flag} alt="" widths={[74, 148]} sizes="74px" aria-hidden="true" />
+      </h2>
+      <p class="tagline">Land of fjords, trolls &amp; trails</p>
+      <p class="lede">
+        Majestic nature, playful folklore, cozy traditions and delicious food —
+        a screen-free adventure your whole family will love.
+      </p>
+
+      <ul class="strip">
+        {highlights.map((h) => (
+          <li>
+            <Image class="s-icon" src={h.art} widths={[96, 192]} sizes="96px" alt="" aria-hidden="true" />
+            <span>{h.label}</span>
+          </li>
+        ))}
+      </ul>
+
+      <div class="buy">
+        <div class="price">
+          {adventure.priceLabel && <p class="eyebrow">{adventure.priceLabel}</p>}
+          <p class="amount">${priceStr}</p>
+        </div>
+        <Button href={buyHref} class="cta" checkout={buyReady}
+                data-analytics-event="cta_checkout">
+          Take my family to {adventure.name} <span aria-hidden="true">→</span>
+        </Button>
+      </div>
+
+      <ul class="reassure">
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="12" r="9.2" stroke="currentColor" stroke-width="1.6" />
+            <path d="M12 7.4v7.2m0 0 3-3m-3 3-3-3M8 16.6h8" stroke="currentColor"
+                  stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <span>Instant digital<br />download</span>
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M3.6 10.6 12 4l8.4 6.6V20a.9.9 0 0 1-.9.9h-15a.9.9 0 0 1-.9-.9z"
+                  stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+            <path d="M9.6 20.9v-6.3h4.8v6.3" stroke="currentColor" stroke-width="1.6"
+                  stroke-linejoin="round" />
+          </svg>
+          <span>Print at home</span>
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="9" cy="8" r="3" stroke="currentColor" stroke-width="1.6" />
+            <circle cx="16.6" cy="9.2" r="2.3" stroke="currentColor" stroke-width="1.6" />
+            <path d="M3.4 18.6a5.6 5.6 0 0 1 11.2 0M15.4 14.2a4.6 4.6 0 0 1 5.2 4.4"
+                  stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+          </svg>
+          <span>One purchase<br />for your household</span>
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 20.4S3.4 15.3 3.4 9.8A4.7 4.7 0 0 1 12 7.1a4.7 4.7 0 0 1 8.6 2.7c0 5.5-8.6 10.6-8.6 10.6Z"
+                  stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+          </svg>
+          <span>No fancy<br />supplies needed</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .fa {
+    --fa-cream: #faf6ec;
+    --fa-pill: #b5e5ea;
+    --fa-coral: #fe8f7b;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: #00203d;
+    color: #fdf8ee;
+    /* Hold the artwork's own 1672x941 ratio so the moon, signpost and lake
+       stay in frame instead of being cropped away by object-fit. */
+    min-height: min(52vw, 900px);
+    display: grid;
+    align-items: center;
+  }
+  /* The illustrated night scene is the whole backdrop. The paper collage that
+     sat on its left has been painted out so a real photo can take that place. */
+  .scene {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Pinned to the bottom so any crop eats the (now extended) sky and never
+       the landscape, signpost or cabin at the edges. */
+    object-position: center bottom;
+  }
+
+  .inner {
+    max-width: 1500px;
+    margin-inline: auto;
+    /* Deep bottom padding keeps the copy clear of "The world is closer than
+       you think.", which lives in the artwork a fixed distance up from its
+       bottom edge. */
+    padding: clamp(2rem, 4.6vw, 4.4rem) clamp(1.25rem, 4vw, 3rem)
+             clamp(4.5rem, 11.5vw, 12rem);
+    display: grid;
+    grid-template-columns: 38% 1fr;
+    gap: clamp(1.5rem, 8.2vw, 7.5rem);
+    align-items: center;
+  }
+
+  /* ---- photo ---- */
+  .media { position: relative; }
+  .pack {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 16px;
+    box-shadow: 0 26px 60px -26px rgba(0, 0, 0, 0.75);
+    transform: rotate(-1.5deg);
+  }
+
+  /* ---- copy ---- */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    background: var(--fa-pill);
+    color: #123152;
+    border-radius: 999px;
+    padding: 0.3rem 1.1rem 0.3rem 0.35rem;
+    margin: 0 0 clamp(0.7rem, 1.4vw, 1.1rem);
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: clamp(0.68rem, 0.78vw, 0.84rem);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .pill .compass { width: clamp(26px, 2.3vw, 34px); height: auto; }
+
+  .title {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    flex-wrap: wrap;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2rem, 3.9vw, 3.55rem);
+    line-height: 1.05;
+    color: #fdf8ee;
+    margin: 0 0 0.15rem;
+  }
+  .title .flag { width: clamp(38px, 4.4vw, 74px); height: auto; }
+  .tagline {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.15rem, 1.75vw, 1.65rem);
+    color: #fdf8ee;
+    margin: 0 0 clamp(0.6rem, 1.2vw, 0.95rem);
+  }
+  .lede {
+    color: #d5e2ee;
+    font-size: clamp(0.98rem, 1.18vw, 1.2rem);
+    line-height: 1.5;
+    max-width: 44ch;
+    margin: 0 0 clamp(1.1rem, 2.2vw, 1.9rem);
+  }
+
+  /* ---- highlight strip ---- */
+  .strip {
+    list-style: none;
+    margin: 0 0 clamp(0.9rem, 1.8vw, 1.5rem);
+    padding: clamp(0.7rem, 1.2vw, 1rem) 0;
+    background: var(--fa-cream);
+    border-radius: 18px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    box-shadow: 0 18px 40px -26px rgba(0, 0, 0, 0.7);
+  }
+  .strip li {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    text-align: center;
+    padding-inline: clamp(0.3rem, 0.6vw, 0.6rem);
+  }
+  .strip li + li { border-left: 1px solid rgba(31, 61, 90, 0.16); }
+  .s-icon { width: clamp(34px, 3.4vw, 56px); height: auto; }
+  .strip span {
+    color: #24537d;
+    font-size: clamp(0.66rem, 0.8vw, 0.88rem);
+    line-height: 1.25;
+  }
+
+  /* ---- price + CTA ---- */
+  .buy {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.9rem, 2vw, 2rem);
+    background: var(--fa-cream);
+    border-radius: 18px;
+    padding: clamp(0.8rem, 1.4vw, 1.15rem) clamp(1rem, 1.8vw, 1.5rem);
+    box-shadow: 0 18px 40px -26px rgba(0, 0, 0, 0.7);
+  }
+  .price { flex: none; padding-right: clamp(0.8rem, 1.8vw, 1.8rem); border-right: 1px solid rgba(31, 61, 90, 0.16); }
+  .eyebrow {
+    margin: 0;
+    color: var(--navy);
+    font-family: var(--font-head);
+    font-weight: 600;
+    font-size: clamp(0.8rem, 0.95vw, 1rem);
+  }
+  .amount {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2.1rem, 3.5vw, 3.3rem);
+    line-height: 1;
+    color: var(--navy);
+  }
+  .fa :global(.cta) {
+    flex: 1;
+    justify-content: center;
+    background: var(--fa-coral);
+    color: var(--navy);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(0.95rem, 1.25vw, 1.28rem);
+    padding-block: clamp(0.75rem, 1.3vw, 1.05rem);
+    box-shadow: none;
+  }
+  .fa :global(.cta:hover) { background: #f97a63; }
+
+  /* ---- reassurance row ---- */
+  .reassure {
+    list-style: none;
+    margin: clamp(0.9rem, 1.8vw, 1.5rem) 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, auto);
+    justify-content: start;
+    gap: clamp(0.8rem, 2vw, 2.1rem);
+  }
+  .reassure li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #eaf1f7;
+    font-size: clamp(0.7rem, 0.82vw, 0.9rem);
+    line-height: 1.25;
+  }
+  .reassure svg { flex: none; width: clamp(20px, 1.7vw, 27px); height: auto; color: #fdf8ee; }
+
+  /* ---- responsive ---- */
+  @media (max-width: 1100px) {
+    .strip { grid-template-columns: repeat(3, 1fr); gap: 0.9rem 0; }
+    .strip li:nth-child(4) { border-left: 0; }
+    .reassure { grid-template-columns: repeat(2, auto); }
+  }
+  @media (max-width: 900px) {
+    .inner { grid-template-columns: 1fr; gap: 2rem; }
+    .media { max-width: 380px; margin-inline: auto; }
+    .title { justify-content: flex-start; }
+    .buy { flex-direction: column; align-items: stretch; text-align: center; }
+    .price { padding-right: 0; padding-bottom: 0.6rem; border-right: 0; border-bottom: 1px solid rgba(31, 61, 90, 0.16); }
+  }
+  @media (max-width: 560px) {
+    .strip { grid-template-columns: repeat(2, 1fr); }
+    .strip li { border-left: 0 !important; }
+    .reassure { grid-template-columns: 1fr; }
+  }
+</style>

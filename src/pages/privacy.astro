@@ -1,0 +1,172 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Container from "../components/ui/Container.astro";
+---
+<BaseLayout
+  title="Privacy — Kitchen Table Wonders"
+  description="What Kitchen Table Wonders collects, why, and your choices — in plain English. No email or personal data goes to our analytics."
+>
+  <Container>
+    <article class="legal">
+      <h1>Privacy Policy</h1>
+      <p class="updated">Last updated: 9 September 2026</p>
+
+      <p>
+        Kitchen Table Wonders (“we”, “us”, “our”) runs kitchentablewonders.com and sells
+        printable digital products. This policy explains what information we collect, why,
+        and your choices. We keep it short and plain on purpose.
+      </p>
+
+      <h2>Who we are</h2>
+      <p>Kitchen Table Wonders, contactable at kitchentablewonders@gmail.com.</p>
+
+      <h2>What we collect</h2>
+      <ul>
+        <li>
+          <strong>Email address</strong> — when you sign up for our free printable Kids’
+          Passport, join our email list, or make a purchase.
+        </li>
+        <li>
+          <strong>Order information</strong> — what you bought and when. Payments are
+          processed by our sellers (Etsy or Lemon Squeezy); we do <strong>not</strong> collect
+          or store your card details — they do.
+        </li>
+        <li>
+          <strong>Basic usage data</strong> — anonymous information about how the site is
+          used, such as which pages are viewed and which buttons are clicked. See
+          <a href="#analytics">How we use analytics</a> below for exactly what this does
+          and doesn’t include.
+        </li>
+      </ul>
+
+      <h2>The free Kids’ Passport and our email list</h2>
+      <p>
+        We collect the email address you submit so we can send you the free printable Kids’
+        Passport and occasional updates about new country kits. Your email is managed by
+        <strong>Kit</strong>, our email provider. You can unsubscribe at any time — every
+        email has an unsubscribe link, and it works instantly.
+      </p>
+
+      <h2 id="analytics">How we use analytics</h2>
+      <p>
+        We use <strong>Amplitude</strong>, a third-party analytics service, to understand
+        how visitors use our site — for example, which pages are viewed and which buttons
+        are clicked — so we can make it better.
+      </p>
+      <ul>
+        <li>
+          Amplitude assigns an <strong>anonymous device identifier</strong> that is stored
+          in your browser. We use it to count visits and understand general usage patterns.
+        </li>
+        <li>
+          We do <strong>not</strong> send Amplitude your email address, your name, or any
+          other personal information. If you join our email list, that address is handled
+          only by Kit — it is never shared with Amplitude.
+        </li>
+        <li>
+          We have configured Amplitude <strong>not to collect your IP address</strong>.
+        </li>
+        <li>
+          We do not use analytics to build advertising profiles about you, and we don’t
+          sell your data.
+        </li>
+      </ul>
+      <p>
+        That anonymous identifier is kept in your browser’s local storage (similar to a
+        cookie). You can clear it at any time in your browser settings. Browser tracking
+        protection or an ad blocker may block our analytics entirely — that’s completely
+        fine, and the site works exactly the same either way.
+      </p>
+
+      <h2>How we use it</h2>
+      <ul>
+        <li>To send you the free download and product you asked for.</li>
+        <li>
+          To send occasional emails about new country packs, tips, and offers (only if you
+          opted in).
+        </li>
+        <li>To respond to your questions.</li>
+        <li>To improve our products and website.</li>
+      </ul>
+      <p>We do not sell your personal information to anyone.</p>
+
+      <h2>Who we share it with (service providers only)</h2>
+      <p>
+        We use trusted third parties to run the business, and share only what’s needed:
+      </p>
+      <ul>
+        <li>
+          <strong>Etsy or Lemon Squeezy</strong> — to sell and deliver digital products and
+          process payment.
+        </li>
+        <li><strong>Kit</strong> — to send the emails you opted into.</li>
+        <li>
+          <strong>Amplitude</strong> — anonymous usage data only, as described above.
+        </li>
+        <li>
+          <strong>Instagram, Pinterest, and similar platforms</strong> — if you interact
+          with us there. Each has its own privacy policy governing your data on their
+          systems.
+        </li>
+      </ul>
+
+      <h2>Children</h2>
+      <p>
+        Our products are made for families to use together, but our website and purchases
+        are intended for adults. We do not knowingly collect personal information from
+        children under 13. If you believe a child has given us their information, contact
+        us and we’ll delete it.
+      </p>
+
+      <h2>Your choices</h2>
+      <ul>
+        <li>
+          Unsubscribe anytime — every email has an unsubscribe link, and it works instantly.
+        </li>
+        <li>
+          Clear the anonymous analytics identifier at any time in your browser settings, or
+          block analytics entirely with tracking protection or an ad blocker.
+        </li>
+        <li>
+          We keep your information only as long as needed for the purposes above, or as
+          required by law.
+        </li>
+      </ul>
+
+      <h2>Cookies and similar storage</h2>
+      <p>
+        Our site and our tools may use cookies or similar browser storage to remember
+        preferences and measure traffic. You can control or disable these in your browser
+        settings; some features may not work as well without them.
+      </p>
+
+      <h2>Security</h2>
+      <p>
+        We take reasonable steps to protect your information, but no method of transmission
+        over the internet is 100% secure, and we can’t guarantee absolute security.
+      </p>
+
+      <h2>Changes</h2>
+      <p>
+        We may update this policy; we’ll change the “Last updated” date above when we do.
+      </p>
+
+      <h2>Contact</h2>
+      <p>Questions about your privacy? Email kitchentablewonders@gmail.com.</p>
+
+      <p class="back"><a href="/">← Back home</a></p>
+    </article>
+  </Container>
+</BaseLayout>
+<style>
+  .legal { max-width: 70ch; margin-inline: auto; padding-block: 3rem 4rem; }
+  .legal h2 {
+    font-size: clamp(1.25rem, 2.2vw, 1.6rem);
+    margin-top: 2.25rem;
+  }
+  .updated { color: var(--muted); font-size: 0.92rem; }
+  .legal ul { padding-left: 1.15rem; margin: 0 0 1rem; }
+  .legal li { margin-bottom: 0.5rem; }
+  .legal strong { color: var(--navy); }
+  .back { margin-top: 2.5rem; }
+</style>

@@ -1,0 +1,141 @@
+---
+import Container from "../ui/Container.astro";
+import { Image } from "astro:assets";
+
+import raysL from "../../assets/scenery/wi-rays-l.png";
+import raysR from "../../assets/scenery/wi-rays-r.png";
+import signLeft from "../../assets/scenery/wi-sign-left.png";
+import rightCluster from "../../assets/scenery/wi-right-cluster.png";
+import icon1 from "../../assets/scenery/wi-icon-1.png";
+import icon2 from "../../assets/scenery/wi-icon-2.png";
+import icon3 from "../../assets/scenery/wi-icon-3.png";
+import icon4 from "../../assets/scenery/wi-icon-4.png";
+import icon5 from "../../assets/scenery/wi-icon-5.png";
+import icon6 from "../../assets/scenery/wi-icon-6.png";
+import icon7 from "../../assets/scenery/wi-icon-7.png";
+
+const { product } = Astro.props;
+// The artwork ships one illustrated icon per item, in content order.
+const icons = [icon1, icon2, icon3, icon4, icon5, icon6, icon7];
+---
+
+<section id="whats-inside" class="wi">
+  <div class="art" aria-hidden="true">
+    <Image class="d d-sign" src={signLeft} alt="" widths={[234, 468]} sizes="234px" />
+  </div>
+
+  <Image class="gutter g-right" src={rightCluster} alt="Little explorers, big connections"
+         widths={[232, 464]} sizes="232px" />
+
+  <Container>
+    <header class="head">
+      <h2>
+        <Image class="ray" src={raysL} alt="" widths={[30, 60]} sizes="30px" aria-hidden="true" />
+        <span>What’s inside every adventure?</span>
+        <Image class="ray" src={raysR} alt="" widths={[32, 64]} sizes="32px" aria-hidden="true" />
+      </h2>
+      <p>Everything you need to turn an ordinary afternoon into somewhere new.</p>
+    </header>
+
+    <ul class="grid">
+      {product.whatsInside.map((item, i) => (
+        <li>
+          {icons[i] && (
+            <Image class="icon" src={icons[i]} alt="" widths={[100, 200]}
+                   sizes="100px" aria-hidden="true" />
+          )}
+          <span>{item.label}</span>
+        </li>
+      ))}
+    </ul>
+  </Container>
+</section>
+
+<style>
+  .wi {
+  /* Gutter art scales with the space actually outside the container, so it
+     is never clipped at the viewport edge. Design gutter is 296px. */
+  --g: min(296px, max(0px, calc((100vw - var(--maxw)) / 2 + 20px)));
+
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: #fdfbf5;
+    padding-block: clamp(2.25rem, 4.4vw, 3.5rem) clamp(2.5rem, 5vw, 4rem);
+  }
+
+  /* ---- scenery ---- */
+  .art { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+  .art .d { position: absolute; height: auto; }
+  .d-sign { right: calc(50% + var(--maxw) / 2 - 20px + var(--g) * 0.047); bottom: 4%; width: calc(var(--g) * 0.791); }
+
+  .gutter { position: absolute; height: auto; z-index: 1; }
+  .g-right { left: calc(50% + var(--maxw) / 2 - 20px + var(--g) * 0.149); bottom: 6%; width: calc(var(--g) * 0.784); }
+
+  /* ---- heading ---- */
+  .head { text-align: center; margin-bottom: clamp(1.2rem, 2.4vw, 1.9rem); }
+  .head h2 {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.85rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.6rem, 2.9vw, 2.65rem);
+    line-height: 1.12;
+    color: var(--navy);
+    margin: 0 0 0.3rem;
+  }
+  .head .ray { flex: none; width: clamp(18px, 1.8vw, 30px); height: auto; }
+  .head p {
+    color: var(--navy-soft);
+    margin: 0;
+    font-size: clamp(0.9rem, 1vw, 1.02rem);
+  }
+
+  /* ---- cards ---- */
+  .grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: clamp(0.5rem, 0.85vw, 0.8rem);
+  }
+  .grid li {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.35rem;
+    text-align: center;
+    background: #fff;
+    border-radius: 14px;
+    padding: clamp(0.7rem, 1.2vw, 1rem) clamp(0.4rem, 0.7vw, 0.6rem);
+    box-shadow: 0 10px 22px -18px rgba(31, 61, 90, 0.5);
+  }
+  .icon { width: clamp(74px, 6.2vw, 100px); height: auto; }
+  .grid span {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(0.74rem, 0.85vw, 0.92rem);
+    line-height: 1.25;
+    color: var(--navy);
+  }
+
+  /* ---- responsive ---- */
+  /* Below this the gutter is too small for the art to read; hide it
+     rather than shrink it to a smudge. */
+  @media (max-width: 1280px) {
+    .art .d, .gutter { display: none; }
+  }
+
+  @media (max-width: 1100px) {
+    .grid { grid-template-columns: repeat(4, 1fr); gap: 0.8rem; }
+  }
+  @media (max-width: 900px) {
+    .art .d, .gutter { display: none; }
+  }
+  @media (max-width: 620px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>

@@ -1,0 +1,185 @@
+---
+import Container from "../ui/Container.astro";
+import { Image } from "astro:assets";
+
+import raysL from "../../assets/scenery/hiw-rays-l.png";
+import raysR from "../../assets/scenery/hiw-rays-r.png";
+import smallAdventures from "../../assets/scenery/hiw-small-adventures.png";
+import leftCluster from "../../assets/scenery/hiw-left-cluster.png";
+import plane from "../../assets/scenery/hiw-plane.png";
+import goodFood from "../../assets/scenery/hiw-good-food.png";
+import mountainsRight from "../../assets/scenery/hiw-mountains-right.png";
+import closing from "../../assets/scenery/hiw-closing.png";
+import step1 from "../../assets/scenery/hiw-step-1.png";
+import step2 from "../../assets/scenery/hiw-step-2.png";
+import step3 from "../../assets/scenery/hiw-step-3.png";
+
+const { product } = Astro.props;
+const steps = product.howItWorks.steps;
+const stepArt = [step1, step2, step3];
+---
+
+<section id="how-it-works" class="hiw">
+  <div class="art" aria-hidden="true">
+    <Image class="d d-left" src={leftCluster} alt="" widths={[282, 564]} sizes="282px" />
+    <Image class="d d-plane" src={plane} alt="" widths={[186, 372]} sizes="186px" />
+    <Image class="d d-mountains" src={mountainsRight} alt="" widths={[286, 572]} sizes="286px" />
+  </div>
+
+  <Image class="gutter g-small-adventures" src={smallAdventures}
+         alt="Small adventures, brighter humans" widths={[172, 344]} sizes="172px" />
+  <Image class="gutter g-good-food" src={goodFood}
+         alt="Good food, brighter conversations" widths={[272, 544]} sizes="272px" />
+
+  <Container>
+    <header class="head">
+      <h2>
+        <Image class="ray ray-l" src={raysL} alt="" widths={[32, 64]} sizes="32px" aria-hidden="true" />
+        <span>How it works</span>
+        <Image class="ray ray-r" src={raysR} alt="" widths={[36, 72]} sizes="36px" aria-hidden="true" />
+      </h2>
+      <p>{product.howItWorks.subhead}</p>
+    </header>
+
+    <ol class="steps">
+      {steps.map((s, i) => (
+        <li>
+          <span class="num">{i + 1}</span>
+          {stepArt[i] && (
+            <Image class="step-art" src={stepArt[i]} alt="" widths={[176, 352]}
+                   sizes="176px" aria-hidden="true" />
+          )}
+          <h3>{s.title}</h3>
+          <p>{s.body}</p>
+        </li>
+      ))}
+    </ol>
+
+    <Image class="closing" src={closing} alt={product.howItWorks.closingLine}
+           widths={[646]} sizes="(max-width: 760px) calc(100vw - 2.5rem), 646px" />
+  </Container>
+</section>
+
+<style>
+  .hiw {
+  /* Gutter art scales with the space actually outside the container, so it
+     is never clipped at the viewport edge. Design gutter is 296px. */
+  --g: min(296px, max(0px, calc((100vw - var(--maxw)) / 2 + 20px)));
+
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: #fdfbf5;
+    padding-block: clamp(2.5rem, 5vw, 4rem) clamp(4rem, 7.5vw, 6rem);
+  }
+
+  /* ---- scenery: anchored to the container edge, never the viewport ---- */
+  .art { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+  .art .d { position: absolute; height: auto; }
+  .d-left { right: calc(50% + var(--maxw) / 2 - 20px + var(--g) * 0.020); bottom: 12%; width: calc(var(--g) * 0.953); }
+  .d-plane { left: calc(50% + 370px); top: 2.3%; width: 186px; }
+  .d-mountains { left: calc(50% + var(--maxw) / 2 - 20px + var(--g) * -0.034); top: 19.3%; width: calc(var(--g) * 0.966); }
+
+  .gutter { position: absolute; height: auto; z-index: 1; }
+  .g-small-adventures { right: calc(50% + var(--maxw) / 2 - 20px + var(--g) * 0.020); top: 7.2%; width: calc(var(--g) * 0.581); }
+  .g-good-food { left: calc(50% + var(--maxw) / 2 - 20px + var(--g) * 0.007); top: 7%; width: calc(var(--g) * 0.919); }
+
+  /* ---- heading ---- */
+  .head { text-align: center; margin-bottom: clamp(1.4rem, 2.6vw, 2.1rem); }
+  .head h2 {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.85rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.8rem, 3.1vw, 2.85rem);
+    line-height: 1.1;
+    color: var(--navy);
+    margin: 0 0 0.35rem;
+  }
+  .head .ray { width: clamp(20px, 1.9vw, 32px); height: auto; }
+  .head p { color: var(--navy-soft); margin: 0; font-size: clamp(0.95rem, 1.05vw, 1.08rem); }
+
+  /* ---- cards ---- */
+  .steps {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(0.9rem, 1.6vw, 1.4rem);
+  }
+  .steps li {
+    position: relative;
+    background: #fdf9f1;
+    border: 2px solid var(--teal-deep);
+    border-radius: 18px;
+    padding: clamp(1.1rem, 2vw, 1.5rem);
+    padding-top: clamp(1rem, 1.8vw, 1.35rem);
+    box-shadow: 0 12px 26px -20px rgba(31, 61, 90, 0.55);
+    text-align: center;
+    /* the inner dashed outline from the artwork */
+    outline: 2px dashed rgba(62, 138, 132, 0.55);
+    outline-offset: -10px;
+  }
+  .num {
+    position: absolute;
+    top: clamp(0.7rem, 1.3vw, 1rem);
+    left: clamp(0.7rem, 1.3vw, 1rem);
+    width: clamp(36px, 2.9vw, 47px);
+    height: clamp(36px, 2.9vw, 47px);
+    display: grid;
+    place-items: center;
+    background: #fe7e6a;
+    color: #fff;
+    border-radius: 50%;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: clamp(1rem, 1.2vw, 1.25rem);
+  }
+  .step-art {
+    display: block;
+    width: clamp(120px, 10.5vw, 176px);
+    height: auto;
+    margin: 0 auto clamp(0.5rem, 1vw, 0.85rem);
+  }
+  .steps h3 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.05rem, 1.3vw, 1.35rem);
+    color: var(--navy);
+    margin: 0 0 0.3rem;
+  }
+  .steps p {
+    color: var(--navy-soft);
+    font-size: clamp(0.88rem, 0.98vw, 1rem);
+    line-height: 1.45;
+    margin: 0;
+  }
+
+  /* One graphic: dashed arrow + sentence + heart. It is capped at its natural
+     646px and centred, and max-width keeps it inside the Container no matter
+     what, so the heart at the right end can never be sliced off. object-fit
+     guards against any future rule forcing a height onto it. */
+  .closing {
+    display: block;
+    width: min(646px, 100%);
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+    margin: clamp(2.2rem, 4vw, 3.2rem) auto 0;
+  }
+
+  /* ---- responsive ---- */
+  /* Below this the gutter is too small for the art to read; hide it
+     rather than shrink it to a smudge. */
+  @media (max-width: 1280px) {
+    .art .d, .gutter { display: none; }
+  }
+
+  @media (max-width: 900px) {
+    .gutter, .art .d { display: none; }
+    .steps { grid-template-columns: 1fr; gap: 1.1rem; }
+    .step-art { width: 140px; }
+  }
+</style>

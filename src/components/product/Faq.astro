@@ -1,0 +1,190 @@
+---
+import Container from "../ui/Container.astro";
+import { Image } from "astro:assets";
+
+import leftCluster from "../../assets/scenery/faq-left-cluster.png";
+import rightCluster from "../../assets/scenery/faq-right-cluster.png";
+import raysL from "../../assets/scenery/faq-rays-l.png";
+import raysR from "../../assets/scenery/faq-rays-r.png";
+
+const { product } = Astro.props;
+
+const faq = product?.faq;
+const faqs = faq?.items ?? [];
+---
+
+{faq && (
+  <section id="faq" class="faq">
+    <svg class="wave wave-top" viewBox="0 0 1916 40" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 0 L1916 0 L1916 14 C 1700 32, 1480 8, 1240 18 S 820 36, 560 22 S 210 4, 0 20 Z"
+            fill="#d4f2f9" />
+    </svg>
+
+    <Image class="cluster cluster-left" src={leftCluster} alt=""
+           widths={[446, 892]} sizes="446px" aria-hidden="true" />
+    <Image class="cluster cluster-right" src={rightCluster} alt=""
+           widths={[470, 940]} sizes="470px" aria-hidden="true" />
+
+    <Container>
+      <header class="head">
+        <h2>
+          <Image class="ray" src={raysL} alt="" widths={[38, 76]} sizes="38px" aria-hidden="true" />
+          <span>{faq.headline}</span>
+          <Image class="ray" src={raysR} alt="" widths={[40, 80]} sizes="40px" aria-hidden="true" />
+        </h2>
+        <p>{faq.subhead}</p>
+      </header>
+
+      <div class="list">
+        {faqs.map((f, i) => (
+          <details open={i === 0}>
+            <summary>
+              <span class:list={["num", i % 2 === 0 ? "num-coral" : "num-teal"]} aria-hidden="true"></span>
+              <span class="q">{f.q}</span>
+              <span class="mark" aria-hidden="true"></span>
+            </summary>
+            <p>{f.a}</p>
+          </details>
+        ))}
+      </div>
+    </Container>
+
+  </section>
+)}
+
+<style>
+  .faq {
+    /* Matches the cluster artwork's own ground exactly — those two crops keep
+       their background because the photos' white frames and skies can't be
+       keyed out (white sits ~8 units from this cream). */
+    /* Gutter art scales with space outside the 726px list. Design gutter 598px. */
+    --g: min(598px, max(0px, calc((100vw - 726px) / 2)));
+    --faq-cream: #fefdf9;
+    --faq-aqua: #d4f2f9;
+    --faq-coral: #fe7e6a;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: var(--faq-cream);
+    padding-block: clamp(2.75rem, 5.2vw, 4.25rem) clamp(3rem, 6vw, 5rem);
+  }
+  .wave { position: absolute; left: 0; width: 100%; display: block; }
+  .wave-top { top: 0; height: clamp(20px, 2.1vw, 40px); z-index: 2; }
+
+  /* ---- gutter artwork: anchored to the list edge, never the viewport ---- */
+  .cluster { position: absolute; height: auto; z-index: -1; pointer-events: none; }
+  .cluster-left { right: calc(50% + 363px + var(--g) * 0.080); top: 8%; width: calc(var(--g) * 0.746); }
+  .cluster-right { left: calc(50% + 363px + var(--g) * 0.094); top: 5%; width: calc(var(--g) * 0.786); }
+
+  /* ---- heading ---- */
+  .head { text-align: center; margin-bottom: clamp(1rem, 2vw, 1.6rem); }
+  .head h2 {
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.7rem, 3.3vw, 3.1rem);
+    line-height: 1.1;
+    color: var(--navy);
+    margin: 0 0 0.35rem;
+  }
+  .head .ray { flex: none; width: clamp(22px, 2vw, 38px); height: auto; }
+  .head p {
+    color: var(--navy-soft);
+    margin: 0;
+    font-size: clamp(0.95rem, 1.2vw, 1.24rem);
+  }
+
+  /* ---- accordion ---- */
+  .list {
+    max-width: 726px;
+    margin-inline: auto;
+    display: grid;
+    gap: 10px;
+  }
+  details {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 10px 24px -20px rgba(31, 61, 90, 0.55);
+    padding: clamp(0.85rem, 1.4vw, 1.15rem) clamp(1rem, 1.6vw, 1.35rem);
+  }
+  details[open] { background: #fef2ee; }
+  summary {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 0.9rem;
+    cursor: pointer;
+    list-style: none;
+  }
+  summary::-webkit-details-marker { display: none; }
+  /* Left badge carries the +/- state, drawn in CSS so it animates. */
+  .num {
+    position: relative;
+    width: clamp(30px, 2.1vw, 39px);
+    height: clamp(30px, 2.1vw, 39px);
+    border-radius: 50%;
+    flex: none;
+  }
+  .num::before,
+  .num::after {
+    content: "";
+    position: absolute;
+    left: 26%;
+    right: 26%;
+    top: 50%;
+    height: 2.4px;
+    border-radius: 2px;
+    background: #fff;
+    transform: translateY(-50%);
+  }
+  .num::after { transform: translateY(-50%) rotate(90deg); transition: transform 0.15s ease; }
+  details[open] .num::after { transform: translateY(-50%) rotate(0deg); }
+  .num-coral { background: var(--faq-coral); }
+  .num-teal { background: #7fcbd2; }
+  .q {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(0.98rem, 1.15vw, 1.2rem);
+    color: var(--navy);
+  }
+  /* + / − drawn in CSS so it animates cleanly between states */
+  .mark {
+    position: relative;
+    width: 18px;
+    height: 18px;
+    flex: none;
+  }
+  .mark::before,
+  .mark::after {
+    content: "";
+    position: absolute;
+    inset: 50% 0 auto;
+    height: 2.2px;
+    border-radius: 2px;
+    background: var(--navy);
+    transform: translateY(-50%);
+  }
+  .mark::after { transform: translateY(-50%) rotate(90deg); transition: transform 0.15s ease; }
+  details[open] .mark::before { background: var(--faq-coral); }
+  details[open] .mark::after { transform: translateY(-50%) rotate(0deg); background: var(--faq-coral); }
+
+  details > p {
+    margin: 0.5rem 0 0;
+    /* line up under the question, past the number badge */
+    padding-left: calc(clamp(30px, 2.1vw, 39px) + 0.9rem);
+    color: var(--navy-soft);
+    font-size: clamp(0.88rem, 1vw, 1.02rem);
+    line-height: 1.5;
+  }
+
+  /* ---- responsive ---- */
+  @media (max-width: 1100px) {
+    .cluster { display: none; }
+  }
+  @media (max-width: 520px) {
+    summary { gap: 0.6rem; }
+    details > p { padding-left: 0; }
+  }
+</style>

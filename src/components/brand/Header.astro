@@ -1,0 +1,114 @@
+---
+import { getEntry } from "astro:content";
+import Container from "../ui/Container.astro";
+import Button from "../ui/Button.astro";
+
+const brand = await getEntry("brand", "site");
+const { name, nav } = brand.data;
+---
+
+<header class="site-header">
+  <Container>
+    <div class="bar">
+      <a href="/" class="brand" aria-label={`${name} home`}>
+        <img src="/brand/logo.png" alt={name} width="139" height="128" />
+      </a>
+
+      <nav class="nav" aria-label="Primary">
+        {nav.map((item) => <a href={item.href}>{item.label}</a>)}
+      </nav>
+
+      <span class="header-cta"><Button href="/#signup" data-analytics-event="nav_join_our_world">Join our world →</Button></span>
+
+      <button class="menu-toggle" aria-label="Open menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </Container>
+</header>
+
+<script>
+  const toggle = document.querySelector(".menu-toggle");
+  const nav = document.querySelector(".site-header .nav");
+  toggle?.addEventListener("click", () => {
+    const open = nav?.classList.toggle("open");
+    toggle.setAttribute("aria-expanded", String(!!open));
+  });
+</script>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    /* A navigation bar, not a mini hero: the logo is sized by height so it
+       can stay prominent without dictating the header's height. */
+    min-height: var(--header-h);
+    background: color-mix(in srgb, var(--cream) 92%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: var(--header-h);
+    padding-block: 8px;
+  }
+  .brand { display: inline-flex; flex: none; }
+  .brand img { height: 64px; width: auto; }
+  .bar .header-cta :global(.btn) {
+    min-height: 44px;
+    padding-block: 0;
+    padding-inline: 1.45rem;
+    font-size: 1rem;
+  }
+  .nav { display: flex; gap: 1.6rem; }
+  .nav a {
+    font-family: var(--font-head);
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: var(--navy);
+    text-decoration: none;
+  }
+  .nav a:hover { color: var(--coral-deep); }
+  .menu-toggle { display: none; }
+
+  @media (max-width: 860px) {
+    .brand img { height: 52px; }
+    .nav {
+      display: none;
+      position: absolute;
+      inset: 100% 0 auto 0;
+      flex-direction: column;
+      gap: 0;
+      background: var(--cream);
+      border-bottom: 1px solid var(--line);
+      padding: 0.5rem 1.25rem 1rem;
+    }
+    .nav.open { display: flex; }
+    .nav a { padding-block: 0.6rem; }
+    .bar .header-cta :global(.btn) {
+      min-height: 38px;
+      padding-inline: 1.05rem;
+      font-size: 0.92rem;
+    }
+    .menu-toggle {
+      display: inline-flex;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: 0;
+      cursor: pointer;
+      padding: 8px;
+      flex: none;
+    }
+    .menu-toggle span {
+      width: 24px;
+      height: 2.5px;
+      background: var(--navy);
+      border-radius: 2px;
+    }
+  }
+</style>

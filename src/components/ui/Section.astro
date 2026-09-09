@@ -1,0 +1,15 @@
+---
+interface Props { id?: string; tone?: "cream" | "sky" | "navy" | "teal" }
+const { id, tone = "cream" } = Astro.props;
+---
+<section id={id} class:list={["section", `tone-${tone}`]}>
+  <slot />
+</section>
+<style>
+  .section { padding-block: clamp(3rem, 7vw, 5.5rem); }
+  .tone-cream { background: var(--cream); }
+  .tone-sky   { background: var(--sky); }
+  .tone-navy  { background: var(--navy); color: #eaf1f4; }
+  .tone-teal  { background: var(--teal); color: #fff; }
+  .tone-navy :global(h2), .tone-teal :global(h2) { color: #fff; }
+</style>

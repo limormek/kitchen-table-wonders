@@ -1,0 +1,158 @@
+/* ============================================================
+   Kitchen Table Wonders — design tokens
+   Official brand palette: "Coastal Daydream".
+   ============================================================ */
+:root {
+  /* Core palette — "Coastal Daydream" */
+  --cream: #FAF7F2;
+  --cream-deep: #F1D5B7;
+  --sand: #F1D5B7;
+  --navy: #1F3D5A;
+  --navy-soft: #35597A;
+  --teal: #4E9CA6;
+  --teal-deep: #3B7B84;
+  --coral: #FFB199;
+  --coral-deep: #F58C6F;
+  --sky: #A8DADC;
+  /* Palette has no gold or green; remapped so existing components keep working. */
+  --gold: #FFB199;
+  --green: #4E9CA6;
+  --ink: #1F3D5A;
+  --muted: #566B78;
+  --line: #E8DBC4;
+
+  /* Type */
+  --font-head: "Quicksand", system-ui, sans-serif;
+  --font-body: "Open Sans", system-ui, sans-serif;
+  /* Display serif — used for the newsletter headline/CTA in the brand artwork. */
+  --font-display: "Quicksand", "Playfair Display", Georgia, "Times New Roman", serif;
+
+  /* Space + shape */
+  --header-h: 80px;        /* sticky header height — see Header.astro */
+  --maxw: 1120px;
+  --radius: 18px;
+  --radius-sm: 12px;
+  --shadow: 0 14px 40px -18px rgba(29, 58, 82, 0.35);
+}
+
+@media (max-width: 860px) {
+  :root { --header-h: 68px; }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* The header is position:sticky, so a plain #anchor jump parks the section's
+   heading directly underneath it. Push each scroll target down by the header
+   height plus a little breathing room. */
+main[id],
+section[id],
+h2[id],
+h3[id] {
+  scroll-margin-top: calc(var(--header-h) + 1rem);
+}
+
+body {
+  margin: 0;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1.06rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-head);
+  color: var(--navy);
+  line-height: 1.12;
+  margin: 0 0 0.5em;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+h1 {
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 700;
+}
+h2 {
+  font-size: clamp(1.7rem, 3.6vw, 2.4rem);
+}
+h3 {
+  font-size: 1.2rem;
+}
+
+p {
+  margin: 0 0 1rem;
+}
+
+a {
+  color: var(--teal-deep);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+:focus-visible {
+  /* Peach failed contrast on the cream and aqua sections (1.7:1 / 1.5:1).
+     Navy clears 9:1 on every light background. */
+  outline: 3px solid var(--navy);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Dark sections need the inverse, or the navy ring disappears into them. */
+.signup :focus-visible,
+.site-footer :focus-visible,
+.fa :focus-visible {
+  outline-color: #fdfbf7;
+}
+
+/* A small hand-drawn "sparkle" divider used beside section titles */
+.sparkle {
+  color: var(--gold);
+  font-size: 1.4em;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+/* Placeholder photo slots — styled so day-one looks intentional,
+   not broken, before real photos are dropped in. */
+.photo-slot {
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 2rem 1rem;
+  color: var(--teal-deep);
+  background: repeating-linear-gradient(
+      135deg,
+      rgba(79, 158, 151, 0.08) 0 14px,
+      rgba(79, 158, 151, 0.14) 14px 28px
+    ),
+    var(--cream-deep);
+  border: 2px dashed rgba(79, 158, 151, 0.5);
+  border-radius: var(--radius);
+  font-family: var(--font-head);
+  font-weight: 600;
+  font-size: 0.9rem;
+  min-height: 220px;
+}

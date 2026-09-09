@@ -1,0 +1,47 @@
+---
+interface Props { href: string; variant?: "primary" | "ghost"; class?: string; checkout?: boolean }
+// ...rest forwards through extra attributes (e.g. data-analytics-event) so
+// callers can annotate a button without this component knowing about them.
+const { href, variant = "primary", class: cls = "", checkout = false, ...rest } = Astro.props;
+const external = href.startsWith("http");
+// For checkout links, lemon.js intercepts the click and opens the overlay.
+// We skip target=_blank so that if JS is blocked, the link still works as a
+// same-tab hosted checkout (graceful fallback).
+const openNewTab = external && !checkout;
+---
+<a
+  href={href}
+  class:list={["btn", `btn-${variant}`, cls, checkout && "lemonsqueezy-button"]}
+  {...openNewTab ? { target: "_blank", rel: "noopener" } : {}}
+  {...rest}
+>
+  <slot />
+</a>
+<style>
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-head);
+    font-weight: 600;
+    font-size: 1.05rem;
+    text-decoration: none;
+    padding: 0.85rem 1.6rem;
+    border-radius: 999px;
+    transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn-primary {
+    background: var(--coral);
+    /* Peach is light — navy text keeps this AA legible. */
+    color: var(--navy);
+    box-shadow: 0 10px 22px -10px rgba(245, 140, 111, 0.8);
+  }
+  .btn-primary:hover { background: var(--coral-deep); }
+  .btn-ghost {
+    background: #fff;
+    color: var(--navy);
+    border: 2px solid var(--line);
+  }
+  .btn-ghost:hover { border-color: var(--coral); }
+</style>

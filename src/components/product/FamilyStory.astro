@@ -1,0 +1,232 @@
+---
+import Container from "../ui/Container.astro";
+import { Image } from "astro:assets";
+import { productImage } from "../../lib/productImages";
+
+import raysL from "../../assets/scenery/lbf-rays-l.png";
+import raysR from "../../assets/scenery/lbf-rays-r.png";
+import signpost from "../../assets/scenery/lbf-signpost.png";
+import moreCuriosity from "../../assets/scenery/lbf-more-curiosity.png";
+import cloud from "../../assets/scenery/lbf-cloud.png";
+import rightCluster from "../../assets/scenery/lbf-right-cluster.png";
+
+const { country } = Astro.props;
+const t = country.testimonial;
+const familyImage = productImage(country.images?.family);
+---
+
+{t && (
+  <section id="loved" class="loved">
+    <!-- cream → aqua, then aqua → cream -->
+    <svg class="wave wave-top" viewBox="0 0 1672 62" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 24 C 140 6, 330 40, 520 34 S 880 8, 1080 20 S 1420 44, 1672 26 L1672 0 L0 0 Z"
+            fill="#fdfbf5" />
+    </svg>
+    <svg class="wave wave-bottom" viewBox="0 0 1672 62" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 38 C 180 56, 360 22, 560 28 S 900 54, 1120 42 S 1440 16, 1672 34 L1672 62 L0 62 Z"
+            fill="#fdfbf5" />
+    </svg>
+
+    <div class="art" aria-hidden="true">
+      <Image class="d d-signpost" src={signpost} alt="" widths={[262, 524]} sizes="262px" />
+      <Image class="d d-cloud" src={cloud} alt="" widths={[58, 116]} sizes="58px" />
+      <Image class="d d-right" src={rightCluster} alt="" widths={[284, 568]} sizes="284px" />
+    </div>
+
+    <Image class="gutter g-more-curiosity" src={moreCuriosity} alt="More curiosity together"
+           widths={[106, 212]} sizes="106px" />
+
+    <Container>
+      <header class="head">
+        <h2>
+          <Image class="ray" src={raysL} alt="" widths={[34, 68]} sizes="34px" aria-hidden="true" />
+          <span>Loved by families</span>
+          <Image class="ray" src={raysR} alt="" widths={[32, 64]} sizes="32px" aria-hidden="true" />
+        </h2>
+      </header>
+
+      <div class="grid">
+        <figure class="quote">
+          <blockquote>
+            <p>“{t.quote}”</p>
+            {t.secondaryQuote && <p>“{t.secondaryQuote}”</p>}
+          </blockquote>
+          <figcaption>
+            <svg class="heart" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 21S3 15.2 3 9.4A5 5 0 0 1 12 6.6 5 5 0 0 1 21 9.4C21 15.2 12 21 12 21Z"
+                    fill="#fe7e6a" />
+            </svg>
+            <span>- {t.attribution}</span>
+          </figcaption>
+        </figure>
+
+        <div class="media">
+          <div class="frame">
+            {familyImage && (
+              <Image src={familyImage} alt="Family enjoying the kit"
+                     widths={[600, 900, 1200]} sizes="(max-width: 900px) 92vw, 44vw" />
+            )}
+          </div>
+          <div class="badge">
+            <svg class="badge-rays" viewBox="0 0 40 40" aria-hidden="true">
+              <g stroke="#f8836a" stroke-width="3.4" stroke-linecap="round">
+                <path d="M6 20h9" /><path d="M11 9l7 6" /><path d="M22 4l1.5 8.5" />
+              </g>
+            </svg>
+            <span>Real<br />family<br />fun</span>
+            <svg class="badge-heart" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 21S3 15.2 3 9.4A5 5 0 0 1 12 6.6 5 5 0 0 1 21 9.4C21 15.2 12 21 12 21Z"
+                    fill="#f8836a" />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </Container>
+  </section>
+)}
+
+<style>
+  .loved {
+  /* Gutter art scales with the space actually outside the container, so it
+     is never clipped at the viewport edge. Design gutter is 296px. */
+  --g: min(296px, max(0px, calc((100vw - var(--maxw)) / 2 + 20px)));
+
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: #d2eff2;
+    padding-block: clamp(3.5rem, 7vw, 5.5rem);
+  }
+  .wave {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: clamp(30px, 3.7vw, 62px);
+    z-index: 2;
+    display: block;
+  }
+  .wave-top { top: 0; }
+  .wave-bottom { bottom: 0; }
+
+  /* ---- scenery ---- */
+  .art { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+  .art .d { position: absolute; height: auto; }
+  .d-signpost { right: calc(50% + var(--maxw) / 2 - 20px + var(--g) * 0.020); top: 22%; width: calc(var(--g) * 0.885); }
+  .d-cloud { left: calc(50% + var(--maxw) / 2 - 20px + var(--g) * 0.115); top: 39.5%; width: calc(var(--g) * 0.196); }
+  .d-right { left: calc(50% + var(--maxw) / 2 - 20px + var(--g) * 0.027); top: 46%; width: calc(var(--g) * 0.959); }
+
+  .gutter { position: absolute; height: auto; z-index: 1; }
+  .g-more-curiosity { left: calc(50% + var(--maxw) / 2 - 20px + var(--g) * 0.378); top: 17%; width: calc(var(--g) * 0.358); }
+
+  /* ---- heading ---- */
+  .head { text-align: center; margin-bottom: clamp(1.2rem, 2.4vw, 1.9rem); }
+  .head h2 {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.9rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.75rem, 3vw, 2.75rem);
+    color: var(--navy);
+    margin: 0;
+  }
+  .head .ray { width: clamp(20px, 2vw, 34px); height: auto; }
+
+  /* ---- layout ---- */
+  .grid {
+    display: grid;
+    grid-template-columns: 50.5% 1fr;
+    gap: clamp(1.5rem, 3.4vw, 3.2rem);
+    align-items: center;
+  }
+
+  .quote {
+    margin: 0;
+    background: #fff;
+    border-radius: 22px;
+    padding: clamp(1.4rem, 2.6vw, 2.1rem);
+    box-shadow: 0 16px 34px -24px rgba(31, 61, 90, 0.5);
+  }
+  blockquote { margin: 0; }
+  blockquote p {
+    color: var(--navy);
+    font-size: clamp(1rem, 1.18vw, 1.22rem);
+    line-height: 1.5;
+    margin: 0 0 1rem;
+  }
+  blockquote p:last-child { margin-bottom: 0; }
+  figcaption {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    margin-top: clamp(0.9rem, 1.6vw, 1.3rem);
+    color: #fe7e6a;
+    font-weight: 700;
+    font-size: clamp(0.9rem, 1.02vw, 1.05rem);
+  }
+  figcaption .heart { width: 1.35em; height: 1.35em; flex: none; }
+
+  /* ---- photo ---- */
+  .media { position: relative; }
+  .frame {
+    background: #fff;
+    border-radius: 26px;
+    padding: 11px;
+    box-shadow: 0 18px 40px -22px rgba(31, 61, 90, 0.5);
+    transform: rotate(-1.2deg);
+  }
+  /* family-holding-passports.webp is 1200x1121 (~1.07:1), NOT 4:3 — forcing
+     4/3 here would cut the children's heads off the top and the adult's face
+     off the bottom. Matching the source ratio means cover crops nothing. */
+  .frame :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1200 / 1121;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 18px;
+  }
+  .badge {
+    position: absolute;
+    top: -8%;
+    right: -4%;
+    width: clamp(70px, 5.8vw, 96px);
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    background: #fff;
+    border: 2.5px solid #f8836a;
+    border-radius: 50%;
+    box-shadow: 0 8px 18px -10px rgba(31, 61, 90, 0.55);
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: clamp(0.64rem, 0.7vw, 0.8rem);
+    line-height: 1.12;
+    color: var(--navy);
+    text-align: center;
+  }
+  .badge span { grid-area: 1 / 1; transform: translateY(-9%); }
+  .badge-heart { grid-area: 1 / 1; width: 16%; transform: translateY(150%); }
+  .badge-rays {
+    position: absolute;
+    top: -18%;
+    right: -20%;
+    width: 42%;
+    height: 42%;
+    transform: scaleX(-1);
+  }
+
+  /* ---- responsive ---- */
+  /* Below this the gutter is too small for the art to read; hide it
+     rather than shrink it to a smudge. */
+  @media (max-width: 1280px) {
+    .art .d, .gutter { display: none; }
+  }
+
+  @media (max-width: 900px) {
+    .grid { grid-template-columns: 1fr; }
+    .media { order: -1; margin-bottom: 2rem; }
+    .art .d, .gutter { display: none; }
+  }
+</style>

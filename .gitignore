@@ -1,0 +1,14 @@
+# build output
+dist/
+# dependencies
+node_modules/
+# generated types
+.astro/
+# environment variables
+.env
+.env.production
+# logs
+npm-debug.log*
+# macOS / editor cruft
+.DS_Store
+.vscode/

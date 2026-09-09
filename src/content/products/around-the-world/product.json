@@ -1,0 +1,120 @@
+{
+  "slug": "around-the-world",
+  "name": "Around the World by Bedtime",
+  "tagline": "Turn an ordinary afternoon at home into a family adventure.",
+  "heroSubhead": "Print-at-home country kits filled with crafts, simple food ideas, games, stories, and little rituals that help busy families explore a new place together – without having to plan the whole thing themselves.",
+  "problem": {
+    "headline": "You want to make memories. You just don’t want another thing to plan.",
+    "body": "Between school, work, and keeping the kids entertained, it's hard to find the time (or energy) for something special. Kitchen Table Wonders does the planning for you — so you can enjoy a meaningful, screen-free adventure together.",
+    "highlights": [
+      {
+        "label": "Meaningful time together",
+        "icon": "mountains"
+      },
+      {
+        "label": "A new place every time",
+        "icon": "signpost"
+      },
+      {
+        "label": "Real-world learning, real-life joy",
+        "icon": "globe"
+      }
+    ]
+  },
+  "howItWorks": {
+    "subhead": "Three simple steps to a whole new world.",
+    "steps": [
+      {
+        "title": "Print your adventure",
+        "body": "Download and print your pack at home."
+      },
+      {
+        "title": "Let the kids take over",
+        "body": "Create, play, explore, and make the experience their own."
+      },
+      {
+        "title": "Travel by dinnertime",
+        "body": "Make a simple country-inspired meal and enjoy the day a little more curious."
+      }
+    ],
+    "closingLine": "Different families. Different dinners. Same little adventure."
+  },
+  "whatsInside": [
+    {
+      "label": "Country discovery guide",
+      "icon": "globe"
+    },
+    {
+      "label": "Kid-friendly fact pages",
+      "icon": "book"
+    },
+    {
+      "label": "Crafts & creative activities",
+      "icon": "scissors"
+    },
+    {
+      "label": "Family games",
+      "icon": "dice"
+    },
+    {
+      "label": "Easy food inspiration",
+      "icon": "chef"
+    },
+    {
+      "label": "Music & culture prompts",
+      "icon": "music"
+    },
+    {
+      "label": "Collectible travel stamp",
+      "icon": "stamp"
+    }
+  ],
+  "heroBenefits": [
+    {
+      "label": "Instant digital download",
+      "icon": "download"
+    },
+    {
+      "label": "Print at home",
+      "icon": "printer"
+    },
+    {
+      "label": "Fun for the whole family",
+      "icon": "family"
+    },
+    {
+      "label": "No fancy supplies needed",
+      "icon": "heart"
+    }
+  ],
+  "faq": {
+    "headline": "Questions before takeoff?",
+    "subhead": "Everything you might want to know before your first family adventure.",
+    "items": [
+      {
+        "q": "What ages is this for?",
+        "a": "Our kits are designed for curious kids ages 3–12, with flexible activities that grow with your family. Younger children can join in with simple activities, and older kids will love the deeper options too."
+      },
+      {
+        "q": "How long does an adventure take?",
+        "a": "Most families spend about 1–2 hours, but you can go at your own pace. The adventures are designed to be flexible, so you can make them work for your schedule."
+      },
+      {
+        "q": "Do we have to cook the suggested meal?",
+        "a": "Not at all! The recipes are simple suggestions to add to the experience, but you can use what you already have at home, try a local restaurant, or just enjoy the activities, stories, and games."
+      },
+      {
+        "q": "Can I use one printable for all my children?",
+        "a": "Yes! One purchase is for one household, so you can use it with all the children in your family. It's perfect for siblings to explore together."
+      },
+      {
+        "q": "What countries are available?",
+        "a": "Norway is ready to explore today — land of fjords, trolls and trails. New countries are added as they're ready, and our email list always hears first."
+      },
+      {
+        "q": "Are more countries coming?",
+        "a": "Yes! We're just getting started. More countries are on the way, so your family can keep exploring new places around the world."
+      }
+    ]
+  }
+}

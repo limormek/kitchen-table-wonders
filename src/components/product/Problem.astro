@@ -1,0 +1,197 @@
+---
+import Container from "../ui/Container.astro";
+import { Image } from "astro:assets";
+import { productImage } from "../../lib/productImages";
+
+import mountainsLeft from "../../assets/scenery/sc-mountains-left.png";
+import treesRight from "../../assets/scenery/sc-trees-right.png";
+import dashRight from "../../assets/scenery/sc-dash-right.png";
+import moreCuriosity from "../../assets/scenery/sc-more-curiosity.png";
+import cornerBr from "../../assets/scenery/sc-corner-br.png";
+import scRays from "../../assets/scenery/sc-rays.png";
+import iconMountains from "../../assets/scenery/sc-icon-mountains.png";
+import iconSignpost from "../../assets/scenery/sc-icon-signpost.png";
+import iconGlobe from "../../assets/scenery/sc-icon-globe.png";
+
+const { product, country } = Astro.props;
+const problemImage = productImage(country?.images?.problem);
+const highlights = product.problem.highlights ?? [];
+const highlightArt = {
+  mountains: iconMountains,
+  signpost: iconSignpost,
+  globe: iconGlobe,
+};
+---
+
+<section class="problem">
+  <!-- Soft wave where the cream hero meets the aqua band. -->
+  <svg class="wave" viewBox="0 0 1672 72" preserveAspectRatio="none" aria-hidden="true">
+    <path
+      d="M0 29 C 90 18, 200 18, 300 39 S 560 52, 730 32 S 900 12, 990 15
+         S 1150 24, 1300 48 S 1520 30, 1672 22 L1672 0 L0 0 Z"
+      fill="#fdfbf5"
+    />
+  </svg>
+
+  <div class="art" aria-hidden="true">
+    <Image class="d d-mtn-left" src={mountainsLeft} alt="" widths={[340, 680]} sizes="20vw" />
+    <Image class="d d-trees-r" src={treesRight} alt="" widths={[102, 204]} sizes="102px" />
+    <Image class="d d-dash-r" src={dashRight} alt="" widths={[132, 264]} sizes="132px" />
+  </div>
+
+  <Image class="gutter more-curiosity" src={moreCuriosity} alt="More curiosity together"
+         widths={[96, 192]} sizes="96px" />
+  <Image class="corner corner-br" src={cornerBr} alt="Big memories start at the kitchen table"
+         widths={[272, 544]} sizes="272px" />
+
+  <Container>
+    <div class="grid">
+      <div class="media">
+        {problemImage && (
+          <Image class="pack" src={problemImage} alt="A cosy family evening at home"
+                 widths={[500, 800, 1000]} sizes="(max-width: 880px) 90vw, 40vw" />
+        )}
+      </div>
+
+      <div class="copy">
+        <Image class="d-rays" src={scRays} alt="" widths={[42, 84]} sizes="42px" aria-hidden="true" />
+        <h2>{product.problem.headline}</h2>
+        <p>{product.problem.body}</p>
+
+        {highlights.length > 0 && (
+          <ul class="highlights">
+            {highlights.map((h) => (
+              <li>
+                {highlightArt[h.icon] && (
+                  <Image class="hl-icon" src={highlightArt[h.icon]} alt=""
+                         widths={[80, 160]} sizes="46px" />
+                )}
+                <span>{h.label}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </div>
+  </Container>
+
+</section>
+
+<style>
+  .problem {
+  /* Gutter art scales with the space actually outside the container, so it
+     is never clipped at the viewport edge. Design gutter is 296px. */
+  --g: min(296px, max(0px, calc((100vw - var(--maxw)) / 2 + 20px)));
+
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: #d2eff2;
+    padding-block: clamp(4rem, 8vw, 7rem) clamp(4.5rem, 9vw, 8rem);
+  }
+  .wave {
+    position: absolute;
+    inset: 0 0 auto;
+    width: 100%;
+    height: clamp(34px, 4.3vw, 72px);
+    z-index: 2;
+    display: block;
+  }
+
+  /* ---- scenery ----
+     Same rule as the hero: gutter art hangs off the container edge
+     (50% ± half of --maxw), so it never crosses into the copy. */
+  .art { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+  .art .d { position: absolute; height: auto; }
+  .d-mtn-left { left: 0; bottom: 0; width: min(340px, 24vw); }
+  .d-trees-r { left: calc(50% + var(--maxw) / 2 - 20px + var(--g) * 0.122); top: 21.4%; width: calc(var(--g) * 0.345); }
+  .d-dash-r { left: calc(50% + var(--maxw) / 2 - 20px + var(--g) * 0.412); top: 31.2%; width: calc(var(--g) * 0.446); }
+
+  .gutter { position: absolute; height: auto; z-index: 1; }
+  .more-curiosity { right: calc(50% + var(--maxw) / 2 - 20px + var(--g) * 0.128); top: 23.6%; width: calc(var(--g) * 0.324); }
+  /* Bottom-right corner accent: the hillside, its trees and the handwritten
+     note are one crop, so there is no seam and nothing is sliced mid-slope.
+     Anchored to the corner, its own bottom edge flush with the section's. */
+  .corner { position: absolute; height: auto; z-index: -1; pointer-events: none; }
+  .corner-br { right: 0; bottom: 0; width: min(272px, 20vw); }
+
+  /* ---- layout ---- */
+  .grid {
+    display: grid;
+    grid-template-columns: 40% 1fr;
+    gap: clamp(1.5rem, 3.4vw, 3.2rem);
+    align-items: center;
+  }
+
+  .media { position: relative; }
+  .copy { position: relative; }
+  .copy .d-rays {
+    position: absolute;
+    left: 83.7%;
+    top: 2.2rem;
+    width: 42px;
+    height: auto;
+  }
+  .pack {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+  }
+  .copy h2 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.85rem, 3.35vw, 3rem);
+    line-height: 1.08;
+    letter-spacing: -0.015em;
+    color: var(--navy);
+    margin: 0 0 clamp(0.75rem, 1.4vw, 1.1rem);
+    max-width: 19ch;
+  }
+  .copy p {
+    color: var(--navy-soft);
+    font-size: clamp(0.98rem, 1.08vw, 1.12rem);
+    line-height: 1.5;
+    margin: 0;
+    max-width: 50ch;
+  }
+
+  .highlights {
+    list-style: none;
+    padding: 0;
+    margin: clamp(1.1rem, 2.2vw, 1.9rem) 0 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.6rem 1rem;
+  }
+  .highlights li { display: flex; align-items: center; gap: 0.55rem; }
+  .hl-icon { flex: none; width: clamp(34px, 2.8vw, 46px); height: auto; }
+  .highlights span {
+    font-size: clamp(0.72rem, 0.85vw, 0.92rem);
+    line-height: 1.3;
+    color: var(--navy-soft);
+  }
+
+  /* ---- responsive ---- */
+  /* Below this the gutter is too small for the art to read; hide it
+     rather than shrink it to a smudge. */
+  @media (max-width: 1280px) {
+    .d-trees-r, .d-dash-r, .gutter { display: none; }
+  }
+
+  @media (max-width: 1240px) {
+    .copy .d-rays { display: none; }
+  }
+  @media (max-width: 1100px) {
+    .corner-br { width: min(200px, 19vw); }
+  }
+  @media (max-width: 880px) {
+    .grid { grid-template-columns: 1fr; }
+    .media { margin-bottom: 2rem; }
+    .gutter, .d-dash-r, .d-trees-r { display: none; }
+    .d-mtn-left { width: 150px; opacity: 0.85; }
+    .corner-br { display: none; }
+    .highlights { grid-template-columns: 1fr; }
+    .copy h2, .copy p { max-width: none; }
+  }
+</style>

@@ -1,0 +1,342 @@
+---
+import Container from "../ui/Container.astro";
+import { Image } from "astro:assets";
+import { productImage } from "../../lib/productImages";
+import { checkoutUrl, isCheckoutReady } from "../../lib/links";
+
+import eyebrowArt from "../../assets/scenery/hero-eyebrow.png";
+import signpost from "../../assets/scenery/hero-signpost.png";
+import rays from "../../assets/scenery/hero-rays.png";
+import sparkleLg from "../../assets/scenery/hero-sparkle-lg.png";
+import sparkleSm from "../../assets/scenery/hero-sparkle-sm.png";
+import planeTrail from "../../assets/scenery/hero-plane-trail.png";
+import cloudRight from "../../assets/scenery/hero-cloud-right.png";
+import cloudLeft from "../../assets/scenery/hero-cloud-left.png";
+import mountainsRight from "../../assets/scenery/hero-mountains-right.png";
+import goodPeople from "../../assets/scenery/hero-good-people.png";
+import treesLeft from "../../assets/scenery/hero-trees-left.png";
+import norwayHit from "../../assets/scenery/hero-norway-hit.png";
+
+const { product, country } = Astro.props;
+const priceStr = country.price.toFixed(2);
+const heroImage = productImage(country.images?.hero);
+const buyHref = checkoutUrl(country.checkoutUrl);
+const buyReady = isCheckoutReady(country.checkoutUrl);
+
+// Benefit chips. Each icon is drawn inline so it stays crisp and recolourable.
+const chipTone = { download: "coral", printer: "teal", family: "teal", heart: "coral" };
+---
+
+<section class="hero">
+  <div class="art" aria-hidden="true">
+    <Image class="d d-signpost" src={signpost} alt="" widths={[215, 430]} sizes="215px" />
+    <Image class="d d-cloud-r" src={cloudRight} alt="" widths={[68, 136]} sizes="68px" />
+    <Image class="d d-mountains" src={mountainsRight} alt="" widths={[200, 400]} sizes="200px" />
+    <Image class="d d-good-people" src={goodPeople} alt="" widths={[128, 256]} sizes="128px" />
+  </div>
+
+  <Container>
+    <div class="grid">
+      <div class="copy">
+        <Image class="d-rays" src={rays} alt="" widths={[44, 88]} sizes="44px" aria-hidden="true" />
+        <Image class="eyebrow" src={eyebrowArt} alt="little explorers. big connections."
+               widths={[272, 544]} sizes="272px" />
+
+        <h1 class="title">Around the World<br />by Bedtime<Image
+          class="title-sparkle" src={sparkleLg} alt="" widths={[52, 104]} sizes="52px"
+          aria-hidden="true" /></h1>
+
+        <p class="lede">{product.tagline}</p>
+        <p class="sub">{product.heroSubhead}</p>
+
+        <a class:list={["cta", buyReady && "lemonsqueezy-button"]} href={buyHref}
+           data-analytics-event="cta_start_norway">
+          Explore {country.name} – ${priceStr} <span aria-hidden="true">→</span>
+        </a>
+
+        <ul class="benefits">
+          {product.heroBenefits.map((b) => (
+            <li>
+              <span class:list={["chip", `chip-${chipTone[b.icon] ?? "coral"}`]}>
+                {b.icon === "download" && (
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M12 4v10m0 0 4-4m-4 4-4-4" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M5 18h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                  </svg>
+                )}
+                {b.icon === "printer" && (
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M7 9V4h10v5" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round" />
+                    <rect x="3.5" y="9" width="17" height="7" rx="2" stroke="currentColor" stroke-width="2" />
+                    <path d="M7 14h10v6H7z" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                )}
+                {b.icon === "family" && (
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <circle cx="8" cy="8" r="2.6" stroke="currentColor" stroke-width="2" />
+                    <circle cx="16" cy="8" r="2.6" stroke="currentColor" stroke-width="2" />
+                    <path d="M4.5 18v-1.6a3.5 3.5 0 0 1 7 0V18M12.5 18v-1.6a3.5 3.5 0 0 1 7 0V18"
+                          stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                  </svg>
+                )}
+                {b.icon === "heart" && (
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M12 19.5S4 14.8 4 9.9A4.4 4.4 0 0 1 12 7.4a4.4 4.4 0 0 1 8 2.5c0 4.9-8 9.6-8 9.6Z"
+                          stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+                  </svg>
+                )}
+              </span>
+              <span class="label">{b.label}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="media">
+        <Image class="d-plane" src={planeTrail} alt="" widths={[268, 536]} sizes="268px" aria-hidden="true" />
+        <Image class="d-sparkle-sm" src={sparkleSm} alt="" widths={[32, 64]} sizes="32px" aria-hidden="true" />
+        <Image class="d-cloud-l" src={cloudLeft} alt="" widths={[48, 96]} sizes="48px" aria-hidden="true" />
+        <Image class="d-trees" src={treesLeft} alt="" widths={[46, 92]} sizes="46px" aria-hidden="true" />
+        <Image class="d-norway-hit" src={norwayHit} alt="" widths={[220, 440]} sizes="220px" aria-hidden="true" />
+        <div class="frame">
+          {heroImage && (
+            <Image src={heroImage} alt={`A family enjoying the ${country.name} kit`}
+                   widths={[600, 900, 1200]} sizes="(max-width: 900px) 92vw, 46vw"
+                   loading="eager" fetchpriority="high" />
+          )}
+        </div>
+        <div class="badge">
+          <svg class="badge-rays" viewBox="0 0 40 40" aria-hidden="true">
+            <g stroke="#f8836a" stroke-width="3.4" stroke-linecap="round">
+              <path d="M6 20h9" /><path d="M11 9l7 6" /><path d="M22 4l1.5 8.5" />
+            </g>
+          </svg>
+          <span>Real<br />family<br />fun</span>
+          <svg class="badge-heart" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 21S3 15.2 3 9.4A5 5 0 0 1 12 6.6 5 5 0 0 1 21 9.4C21 15.2 12 21 12 21Z"
+                  fill="#f8836a" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  </Container>
+</section>
+
+<style>
+  .hero {
+  /* Gutter art scales with the space actually outside the container, so it
+     is never clipped at the viewport edge. Design gutter is 296px. */
+  --g: min(296px, max(0px, calc((100vw - var(--maxw)) / 2 + 20px)));
+
+    --cta: #fe755d;
+    --cta-hover: #f2604a;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: #fdfbf5;
+    padding-block: clamp(1.75rem, 3.4vw, 3rem) clamp(2.5rem, 5vw, 4rem);
+  }
+
+  /* ---- scenery ----
+     Gutter art is anchored to the CONTAINER edge (50% ± half of --maxw), never
+     to a viewport percentage, so it can never wander over the copy. When the
+     window is too narrow to hold it, the section's overflow clips it away. */
+  .art { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+  .art .d { position: absolute; height: auto; }
+  .d-signpost { right: calc(50% + var(--maxw) / 2 - 20px + var(--g) * 0.152); bottom: 14px; width: calc(var(--g) * 0.726); }
+  .d-cloud-r { left: calc(50% + var(--maxw) / 2 - 20px + var(--g) * 0.098); top: 23.7%; width: calc(var(--g) * 0.230); }
+  .d-mountains { left: calc(50% + var(--maxw) / 2 - 20px + var(--g) * 0.095); top: 35.5%; width: calc(var(--g) * 0.676); }
+  .d-good-people { left: calc(50% + var(--maxw) / 2 - 20px + var(--g) * 0.257); top: 59.7%; width: calc(var(--g) * 0.432); }
+
+  /* ---- layout ---- */
+  .grid {
+    display: grid;
+    grid-template-columns: 45% 1fr;
+    gap: clamp(1.5rem, 5.2vw, 5rem);
+    align-items: center;
+  }
+
+  /* ---- copy ---- */
+  .copy { position: relative; }
+  .d-rays {
+    position: absolute;
+    right: calc(100% + 16px);
+    top: 4.4rem;
+    width: 44px;
+    height: auto;
+  }
+  .eyebrow { width: min(272px, 78%); height: auto; margin-bottom: 0.25rem; }
+  .title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2.2rem, 4.3vw, 3.85rem);
+    line-height: 1.02;
+    letter-spacing: -0.015em;
+    color: var(--navy);
+    margin: 0 0 0.7rem;
+  }
+  .title-sparkle {
+    display: inline-block;
+    width: 0.85em;
+    height: auto;
+    margin-left: 0.3em;
+    vertical-align: -0.06em;
+  }
+  .lede {
+    font-family: var(--font-head);
+    font-weight: 600;
+    font-size: clamp(1.15rem, 1.65vw, 1.55rem);
+    line-height: 1.28;
+    color: var(--navy);
+    margin: 0 0 0.75rem;
+    max-width: 20ch;
+  }
+  .sub {
+    color: var(--navy-soft);
+    font-size: clamp(0.95rem, 1.02vw, 1.05rem);
+    line-height: 1.5;
+    margin: 0;
+    max-width: 46ch;
+  }
+
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-block: clamp(1.1rem, 2.2vw, 1.7rem) clamp(1.1rem, 2.1vw, 1.6rem);
+    background: var(--cta);
+    color: #fff;
+    text-decoration: none;
+    font-family: var(--font-head);
+    font-weight: 600;
+    font-size: clamp(1.02rem, 1.3vw, 1.28rem);
+    padding: 0.78rem 1.85rem;
+    border-radius: 999px;
+    box-shadow: 0 10px 22px -12px rgba(254, 117, 93, 0.9);
+    transition: background 0.12s ease, transform 0.12s ease;
+  }
+  .cta:hover { background: var(--cta-hover); transform: translateY(-1px); }
+
+  .benefits {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.4rem 0.7rem;
+  }
+  .benefits li { display: flex; align-items: center; gap: 0.5rem; }
+  .chip {
+    flex: none;
+    width: clamp(30px, 2.3vw, 38px);
+    height: clamp(30px, 2.3vw, 38px);
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+  }
+  .chip svg { width: 58%; height: 58%; }
+  .chip-coral { background: #fce4de; color: #f1614a; }
+  .chip-teal { background: #d9edeb; color: #2e8b87; }
+  .benefits .label {
+    font-size: clamp(0.68rem, 0.79vw, 0.83rem);
+    line-height: 1.25;
+    color: var(--navy);
+  }
+
+  /* ---- photo ----
+     These sit around the photo, so they are positioned as a share of .media
+     and travel with it instead of drifting across the layout. */
+  .media { position: relative; }
+  .media > .d-plane,
+  .media > .d-sparkle-sm,
+  .media > .d-cloud-l,
+  .media > .d-trees,
+  .media > .d-norway-hit { position: absolute; height: auto; z-index: 1; }
+  .d-plane { left: 4.5%; top: -8.3%; width: 50.4%; }
+  .d-sparkle-sm { left: -9%; top: 31.2%; width: 6%; }
+  .d-cloud-l { left: -12%; top: 44.7%; width: 9%; }
+  .d-trees { left: -10.5%; top: 77.3%; width: 8.6%; }
+  .d-norway-hit { left: 72.6%; top: calc(100% + 4px); width: 41.4%; }
+  .frame {
+    background: #fff;
+    border-radius: 30px;
+    padding: 13px;
+    box-shadow: 0 18px 40px -22px rgba(31, 61, 90, 0.5);
+    transform: rotate(-2.2deg);
+  }
+  /* Aspect-ratio sits on the IMAGE, not .frame: .frame has 13px of padding, so
+     a ratio on the frame would leave the photo area slightly off-ratio and
+     reintroduce a crop. kids-with-passports.webp is exactly 1200x900, so a 4:3
+     photo area means cover crops nothing at all. */
+  .frame :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 20px;
+  }
+  .badge {
+    position: absolute;
+    /* nudged a little further out so it clips the frame corner rather than
+       sitting over the photo */
+    top: -5%;
+    right: -4%;
+    width: clamp(74px, 6.1vw, 102px);
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    gap: 0;
+    background: #fff;
+    border: 2.5px solid #f8836a;
+    border-radius: 50%;
+    box-shadow: 0 8px 18px -10px rgba(31, 61, 90, 0.55);
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: clamp(0.66rem, 0.72vw, 0.82rem);
+    line-height: 1.12;
+    color: var(--navy);
+    text-align: center;
+  }
+  .badge span { grid-area: 1 / 1; transform: translateY(-9%); }
+  .badge-heart { grid-area: 1 / 1; width: 16%; transform: translateY(150%); }
+  .badge-rays {
+    position: absolute;
+    top: -18%;
+    right: -20%;
+    width: 42%;
+    height: 42%;
+    transform: scaleX(-1);
+  }
+
+  /* ---- responsive ---- */
+  /* Below this the gutter is too small for the art to read; hide it
+     rather than shrink it to a smudge. */
+  @media (max-width: 1280px) {
+    .art .d { display: none; }
+  }
+
+  @media (max-width: 1240px) {
+    .d-rays { display: none; }
+  }
+  @media (max-width: 1100px) {
+    .d-cloud-l, .d-trees, .d-sparkle-sm { display: none; }
+  }
+  @media (max-width: 900px) {
+    .grid { grid-template-columns: 1fr; }
+    .media { order: -1; margin-bottom: 2.5rem; }
+    .art .d { display: none; }
+    .media > .d-plane { display: none; }
+    .d-norway-hit { left: auto; right: 0; top: 100%; width: 190px; }
+    .benefits { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.8rem; }
+    .eyebrow { width: 240px; }
+  }
+  @media (max-width: 460px) {
+    .benefits { grid-template-columns: 1fr; }
+    .art .d-signpost { display: none; }
+  }
+</style>

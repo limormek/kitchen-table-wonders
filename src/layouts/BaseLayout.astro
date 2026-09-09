@@ -1,0 +1,132 @@
+---
+import "../styles/global.css";
+import Header from "../components/brand/Header.astro";
+import Footer from "../components/brand/Footer.astro";
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  ogImageAlt?: string;
+  noindex?: boolean;
+}
+
+const {
+  title = "Around the World by Bedtime | Kitchen Table Wonders",
+  description = "Turn an ordinary afternoon at home into a family adventure. Printable country kits with crafts, food, games and stories for busy families.",
+  ogImage = "/social/og-home.jpg",
+  ogImageAlt = "Kitchen Table Wonders — Around the World by Bedtime",
+  noindex = false,
+} = Astro.props;
+
+// Link previews break on relative paths, so both of these are resolved to
+// absolute URLs against `site` in astro.config.mjs. Canonical is per-page.
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImageUrl = new URL(ogImage, Astro.site).href;
+const siteUrl = new URL("/", Astro.site).href;
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": `${siteUrl}#org`,
+      name: "Kitchen Table Wonders",
+      url: siteUrl,
+      logo: new URL("/brand/logo.png", Astro.site).href,
+      description:
+        "Printable country kits with crafts, food, games and stories for busy families.",
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${siteUrl}#site`,
+      name: "Kitchen Table Wonders",
+      url: siteUrl,
+      publisher: { "@id": `${siteUrl}#org` },
+      inLanguage: "en-US",
+    },
+  ],
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/brand/favicon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/brand/apple-touch-icon.png" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+
+    <!-- Open Graph / social preview (WhatsApp, iMessage, Facebook, LinkedIn) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Kitchen Table Wonders" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={ogImageAlt} />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+    <meta name="twitter:image:alt" content={ogImageAlt} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Open+Sans:wght@400;600;700&family=Playfair+Display:wght@700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Header />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
+
+    <!-- Lemon Squeezy checkout overlay: any link with class
+         "lemonsqueezy-button" opens the checkout on top of the page. -->
+    <script src="https://app.lemonsqueezy.com/js/lemon.js" defer is:inline></script>
+
+    <!-- Privacy-first Amplitude. Bundled as a module, so it is deferred and
+         never blocks rendering. No-ops in dev and when the key is unset. -->
+    <script>
+      import { initAnalytics } from "../scripts/analytics";
+      initAnalytics();
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  /* Visible only when focused, so keyboard users can jump the nav. */
+  .skip-link {
+    position: absolute;
+    left: 0.75rem;
+    top: -4rem;
+    z-index: 100;
+    background: var(--navy);
+    color: #fdfbf7;
+    font-family: var(--font-head);
+    font-weight: 600;
+    padding: 0.7rem 1.1rem;
+    border-radius: 0 0 10px 10px;
+    text-decoration: none;
+    transition: top 0.15s ease;
+  }
+  .skip-link:focus { top: 0; }
+  main:focus { outline: none; }
+</style>

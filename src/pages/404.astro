@@ -1,0 +1,221 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { Image } from "astro:assets";
+
+import eyebrow from "../assets/notfound/nf-eyebrow.webp";
+import headlineRays from "../assets/notfound/nf-headline-rays.webp";
+import leftAccents from "../assets/notfound/nf-left-accents.webp";
+import signpost from "../assets/notfound/nf-signpost.webp";
+import raysL from "../assets/notfound/nf-rays-l.webp";
+import raysR from "../assets/notfound/nf-rays-r.webp";
+import scene from "../assets/notfound/nf-scene.webp";
+import bandLeft from "../assets/notfound/nf-band-left.webp";
+import bandRight from "../assets/notfound/nf-band-right.webp";
+import bandNote from "../assets/notfound/nf-band-note.webp";
+import bandTrail from "../assets/notfound/nf-band-trail.webp";
+---
+
+<BaseLayout
+  title="Oops — wrong turn! | Kitchen Table Wonders"
+  description="This page seems to have wandered off on its own little adventure. Let's get you back to the kitchen table."
+  noindex
+>
+  <section class="nf">
+    <Image class="d d-accents" src={leftAccents} alt="" widths={[96, 192]} sizes="96px" />
+    <Image class="d d-signpost" src={signpost} alt="" widths={[212, 424]} sizes="212px" />
+
+    <div class="nf-inner">
+      <div class="copy">
+        <Image class="eyebrow" src={eyebrow}
+               alt="Even the best explorers take a wrong turn sometimes."
+               widths={[315, 630]} sizes="315px" />
+
+        <div class="title-wrap">
+          <Image class="title-rays" src={headlineRays} alt="" widths={[62, 124]} sizes="62px" />
+          <h1>Oops -<br />wrong turn!</h1>
+        </div>
+
+        <p class="lede">This page seems to have wandered off on its own little adventure.</p>
+        <p class="sub">Let's get you back to the kitchen table for more curious, cozy family fun.</p>
+
+        <div class="actions">
+          <a class="cta" href="/">Back home <span aria-hidden="true">→</span></a>
+          <p class="alt">
+            <Image class="ray" src={raysL} alt="" widths={[34, 68]} sizes="34px" />
+            <a href="/#pricing">Or explore Norway</a>
+            <Image class="ray" src={raysR} alt="" widths={[36, 72]} sizes="36px" />
+          </p>
+        </div>
+      </div>
+
+      <div class="media">
+        <Image class="scene" src={scene} alt="" widths={[785, 1570]}
+               sizes="(max-width: 900px) 92vw, 55vw"
+               loading="eager" fetchpriority="high" />
+      </div>
+    </div>
+  </section>
+
+  <div class="nf-band">
+    <svg class="wave" viewBox="0 0 1448 62" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 38 C 160 28, 300 46, 450 42 S 640 16, 760 8 S 940 44, 1060 26
+               S 1240 42, 1340 30 S 1420 8, 1448 10 L1448 0 L0 0 Z" fill="#FEFDF8" />
+    </svg>
+    <Image class="b b-left" src={bandLeft} alt="" widths={[344, 688]} sizes="24vw" />
+    <Image class="b b-note" src={bandNote} alt="Home is the start of every adventure."
+           widths={[340, 680]} sizes="24vw" />
+    <Image class="b b-trail" src={bandTrail} alt="" widths={[168, 336]} sizes="12vw" />
+    <Image class="b b-right" src={bandRight} alt="" widths={[284, 568]} sizes="20vw" />
+  </div>
+</BaseLayout>
+
+<style>
+  /* Cream and aqua sampled from the artwork so the opaque cut-outs, which keep
+     their own ground, sit on an exactly matching background. */
+  .nf {
+    --nf-cream: #fefdf8;
+    --nf-coral: #fd7c71;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: var(--nf-cream);
+    padding-block: clamp(1.5rem, 3.4vw, 3.1rem) 0;
+  }
+
+  .nf-inner {
+    max-width: 1448px;
+    margin-inline: auto;
+    padding-left: clamp(1.25rem, 13.1vw, 190px);
+    display: grid;
+    grid-template-columns: 37.7% 62.3%;
+    align-items: center;
+  }
+
+  /* ---- decorative art, anchored so it never crosses the copy ---- */
+  .nf .d { position: absolute; height: auto; z-index: -1; }
+  .d-accents { left: 4%; top: 40%; width: min(96px, 6.6vw); }
+  .d-signpost { left: 0; bottom: 0; width: min(212px, 14.6vw); }
+
+  /* ---- copy ---- */
+  .copy { position: relative; }
+  .eyebrow { display: block; width: min(315px, 21.8vw); height: auto; margin-bottom: 0.6rem; }
+
+  .title-wrap { position: relative; }
+  .title-rays {
+    position: absolute;
+    right: 100%;
+    margin-right: 0.6rem;
+    top: 0.6em;
+    width: min(62px, 4.3vw);
+    height: auto;
+  }
+  .nf h1 {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: clamp(2.6rem, 6.6vw, 6rem);
+    line-height: 1.02;
+    letter-spacing: -0.01em;
+    color: var(--navy);
+    margin: 0 0 0.35em;
+  }
+  .lede {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: clamp(1.3rem, 2.3vw, 2.1rem);
+    line-height: 1.2;
+    color: var(--navy);
+    margin: 0 0 0.7rem;
+    max-width: 15ch;
+  }
+  .sub {
+    font-size: clamp(1rem, 1.4vw, 1.25rem);
+    line-height: 1.45;
+    color: var(--navy-soft);
+    margin: 0;
+    max-width: 26ch;
+  }
+
+  /* the CTA group sits slightly inset from the text, as in the artwork */
+  .actions { margin-left: clamp(0px, 3.9vw, 56px); }
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin-top: clamp(1.1rem, 2.2vw, 2rem);
+    background: var(--nf-coral);
+    color: #fff;
+    text-decoration: none;
+    font-family: var(--font-head);
+    font-weight: 600;
+    font-size: clamp(1.05rem, 1.55vw, 1.4rem);
+    padding: clamp(0.7rem, 1.1vw, 1rem) clamp(1.6rem, 3vw, 2.9rem);
+    border-radius: 999px;
+    transition: background 0.12s ease, transform 0.12s ease;
+  }
+  .cta:hover { background: #f2604a; transform: translateY(-1px); }
+
+  .alt {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.7rem;
+    margin: clamp(0.7rem, 1.3vw, 1.1rem) 0 0;
+    font-size: clamp(0.95rem, 1.3vw, 1.15rem);
+  }
+  .alt .ray { flex: none; width: min(34px, 2.4vw); height: auto; }
+  .alt a {
+    color: var(--navy);
+    text-decoration: none;
+    border-bottom: 2px solid var(--nf-coral);
+    padding-bottom: 2px;
+  }
+  .alt a:hover { color: var(--nf-coral); }
+
+  /* ---- illustration ---- */
+  .media { min-width: 0; }
+  .scene { display: block; width: 100%; height: auto; }
+
+  /* ---- aqua band ---- */
+  .nf-band {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: #d1f0f4;
+    min-height: clamp(88px, 10.4vw, 150px);
+  }
+  .wave {
+    position: absolute;
+    inset: 0 0 auto;
+    width: 100%;
+    height: clamp(26px, 4.3vw, 62px);
+    z-index: 2;
+    display: block;
+  }
+  .nf-band .b { position: absolute; height: auto; }
+  .b-left { left: 0; bottom: 0; width: min(344px, 23.8vw); }
+  .b-right { right: 0; bottom: 0; width: min(284px, 19.6vw); }
+  .b-note {
+    left: 50%;
+    transform: translateX(-50%);
+    top: 35%;
+    width: min(340px, 23.5vw);
+    z-index: 1;
+  }
+  .b-trail { left: 68.8%; top: 25%; width: min(168px, 11.6vw); }
+
+  /* ---- responsive ---- */
+  @media (max-width: 900px) {
+    .nf-inner {
+      grid-template-columns: 1fr;
+      padding-inline: 1.25rem;
+      gap: 1.5rem;
+    }
+    .nf .d-accents { display: none; }
+    .d-signpost { width: 120px; opacity: 0.9; }
+    .lede, .sub { max-width: none; }
+    .actions { margin-left: 0; }
+    .media { max-width: 560px; margin-inline: auto; }
+    .b-trail { display: none; }
+    .b-note { width: min(300px, 56vw); top: 30%; }
+  }
+</style>

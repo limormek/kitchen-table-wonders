@@ -1,0 +1,19 @@
+---
+// Simple line-icon set used across the page (hero benefits + what's-inside).
+interface Props { name: string; size?: number; color?: string; class?: string }
+const { name, size = 26, color = "var(--teal-deep)", class: cls = "" } = Astro.props;
+const s = { width: size, height: size, viewBox: "0 0 24 24", fill: "none",
+  stroke: color, "stroke-width": 1.8, "stroke-linecap": "round",
+  "stroke-linejoin": "round", "aria-hidden": "true" };
+---
+{name === "printer" && <svg {...s} class={cls}><path d="M6 9V3h12v6"/><rect x="4" y="9" width="16" height="8" rx="2"/><path d="M7 17h10v4H7z"/><circle cx="17" cy="12" r=".6" fill={color}/></svg>}
+{name === "home" && <svg {...s} class={cls}><path d="M4 11l8-7 8 7"/><path d="M6 10v9h12v-9"/><path d="M10 19v-5h4v5"/></svg>}
+{name === "family" && <svg {...s} class={cls}><circle cx="8" cy="8" r="2.4"/><circle cx="16" cy="8" r="2.4"/><path d="M3.5 19c0-3 2-4.5 4.5-4.5S12.5 16 12.5 19"/><path d="M12 19c0-3 2-4.5 4.5-4.5S21 16 21 19"/></svg>}
+{name === "heart" && <svg {...s} class={cls}><path d="M12 20s-7-4.5-7-9.3A3.9 3.9 0 0 1 12 8a3.9 3.9 0 0 1 7 2.7C19 15.5 12 20 12 20Z"/></svg>}
+{name === "globe" && <svg {...s} class={cls}><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.4 2.5 14.6 0 17M12 3.5c-2.5 2.4-2.5 14.6 0 17"/></svg>}
+{name === "book" && <svg {...s} class={cls}><path d="M4 5c2-1 5-1 8 .5V20c-3-1.5-6-1.5-8-.5z"/><path d="M20 5c-2-1-5-1-8 .5V20c3-1.5 6-1.5 8-.5z"/></svg>}
+{name === "scissors" && <svg {...s} class={cls}><circle cx="6" cy="6" r="2.4"/><circle cx="6" cy="18" r="2.4"/><path d="M8 8l12 8M8 16l12-8"/></svg>}
+{name === "chef" && <svg {...s} class={cls}><path d="M7 14a4 4 0 1 1 1.6-7.7 3.5 3.5 0 0 1 6.8 0A4 4 0 1 1 17 14z"/><path d="M7 14v4h10v-4"/></svg>}
+{name === "gift" && <svg {...s} class={cls}><rect x="4" y="9" width="16" height="11" rx="1.5"/><path d="M4 13h16M12 9v11"/><path d="M12 9S9 4 7 6s3 3 5 3c2 0 7 1 5-3s-5 3-5 3"/></svg>}
+{name === "music" && <svg {...s} class={cls}><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></svg>}
+{name === "stamp" && <svg {...s} class={cls}><circle cx="12" cy="9" r="4.5"/><path d="M12 13.5V17M6 20h12v-1.5a1.5 1.5 0 0 0-1.5-1.5h-9A1.5 1.5 0 0 0 6 18.5z"/></svg>}

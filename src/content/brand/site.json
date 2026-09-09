@@ -1,0 +1,44 @@
+{
+  "name": "Kitchen Table Wonders",
+  "tagline": "Let's make more magic",
+  "nav": [
+    {
+      "label": "How it works",
+      "href": "/#how-it-works"
+    },
+    {
+      "label": "What's inside",
+      "href": "/#whats-inside"
+    },
+    {
+      "label": "Loved by families",
+      "href": "/#loved"
+    },
+    {
+      "label": "FAQ",
+      "href": "/#faq"
+    }
+  ],
+  "footerLinks": [
+    {
+      "label": "Contact Us",
+      "href": "mailto:kitchentablewonders@gmail.com"
+    },
+    {
+      "label": "FAQs",
+      "href": "/#faq"
+    },
+    {
+      "label": "Terms",
+      "href": "/terms"
+    },
+    {
+      "label": "Privacy Policy",
+      "href": "/privacy"
+    }
+  ],
+  "newsletter": {
+    "kitAction": "https://app.kit.com/forms/9894656/subscriptions",
+    "successMessage": "You're in! Check your inbox to confirm — your free passport is on the way."
+  }
+}
