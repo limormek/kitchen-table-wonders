@@ -8,8 +8,12 @@ import * as amplitude from "@amplitude/analytics-browser";
  * no name, no address, no form values, no user id, no IP.
  *
  * Deliberate choices:
- *   - trackingOptions.ipAddress: false — Amplitude does not record the IP, so
- *     there is no IP-derived geolocation on events.
+ *   - trackingOptions is left at its defaults. Amplitude uses the request IP
+ *     server-side to infer COARSE location (country / region / city) and then
+ *     stores only a masked IP. We want the country breakdown, and an IP is not
+ *     PII we are choosing to send from the client — it is inherent to any HTTP
+ *     request. We never call identify()/setUserId(), so this geo data stays
+ *     attached to the anonymous device id only.
  *   - autocapture: pageViews + sessions ONLY. elementInteractions and
  *     formInteractions are OFF because they scrape clicked-element text and
  *     form field metadata, which can sweep up typed values. We fire our own
@@ -98,7 +102,9 @@ export function initAnalytics(): void {
   if (!API_KEY) return;
 
   amplitude.init(API_KEY, {
-    trackingOptions: { ipAddress: false },
+    // trackingOptions left at defaults so Amplitude can infer coarse geo
+    // (Country / Region / City) from the request IP. No geo is sent from the
+    // client and the raw IP is not retained by Amplitude.
     autocapture: {
       pageViews: true,
       sessions: true,
