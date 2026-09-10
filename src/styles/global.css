@@ -9,6 +9,10 @@
   --sand: #F1D5B7;
   --navy: #1F3D5A;
   --navy-soft: #35597A;
+  /* Deep navy shared by the newsletter section and the footer so the two
+     read as one continuous block. Matches the ground baked into the
+     cut-out newsletter artwork. */
+  --deep-navy: #173B5C;
   --teal: #4E9CA6;
   --teal-deep: #3B7B84;
   --coral: #FFB199;

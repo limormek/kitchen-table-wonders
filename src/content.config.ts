@@ -22,7 +22,8 @@ const brand = defineCollection({
     // HTML embed, e.g. https://app.kit.com/forms/1234567/subscriptions
     newsletter: z.object({
       kitAction: z.string(),
-      successMessage: z.string(),
+      successHeadline: z.string(),
+      successBody: z.string(),
     }),
   }),
 });

@@ -8,13 +8,12 @@ import airplaneTrail from "../../assets/newsletter/airplane-trail.webp";
 import passportStamp from "../../assets/newsletter/passport-stamp.webp";
 import curiousKids from "../../assets/newsletter/curious-kids.webp";
 import bigPlaces from "../../assets/newsletter/big-places.webp";
-import smallMoments from "../../assets/newsletter/small-moments.webp";
 import heartRays from "../../assets/newsletter/heart-rays.webp";
 import starGold from "../../assets/newsletter/star-gold.webp";
 import starTeal from "../../assets/newsletter/star-teal.webp";
 
 const brand = await getEntry("brand", "site");
-const { kitAction, successMessage } = brand.data.newsletter;
+const { kitAction, successHeadline, successBody } = brand.data.newsletter;
 
 // Wired to the Kit inline form (uid ca05039a86, form 9894656), using our own
 // markup so none of Kit's formkit-* CSS lands on the page.
@@ -103,7 +102,10 @@ const dots = [
         <button type="submit">Send me the free passport <span aria-hidden="true">→</span></button>
       </form>
 
-      <p class="kit-success" hidden>{successMessage}</p>
+      <div class="kit-success" hidden>
+        <p class="kit-success-head">{successHeadline}</p>
+        <p class="kit-success-body">{successBody}</p>
+      </div>
       <p class="kit-error" role="alert" hidden></p>
       <p class="hint">No spam. Just good stuff for curious families.</p>
 
@@ -114,8 +116,9 @@ const dots = [
         </p>
       )}
 
-      <Image class="tagline" src={smallMoments} alt="Small moments. A bigger world."
-             widths={[660, 1320]} sizes="(max-width: 700px) 90vw, 660px" />
+      <p class="tagline">
+        <span class="tagline-part">Small moments.</span><span class="tagline-sep"> </span><span class="tagline-part">A bigger world. &#127757;</span>
+      </p>
     </div>
   </Container>
 </section>
@@ -170,7 +173,7 @@ const dots = [
   /* Deep navy taken from the artwork so the cut-out illustrations
      (which carry their own navy ground) blend seamlessly. */
   .signup {
-    --signup-navy: #173b5c;
+    --signup-navy: var(--deep-navy);
     --signup-peach: #fca995;
     --signup-peach-lip: #f0836b;
     position: relative;
@@ -302,10 +305,23 @@ const dots = [
 
   .kit-success {
     margin-top: 1.25rem;
-    font-family: var(--font-head);
+    max-width: 30em;
+    margin-inline: auto;
+  }
+  .kit-success[hidden] { display: none; }
+  .kit-success-head {
+    font-family: var(--font-display);
     font-weight: 700;
     color: #fff;
-    font-size: 1.1rem;
+    font-size: clamp(1.25rem, 2.4vw, 1.6rem);
+    line-height: 1.15;
+    margin: 0 0 0.4rem;
+  }
+  .kit-success-body {
+    color: #c9dde7;
+    font-size: clamp(0.95rem, 1.4vw, 1.1rem);
+    line-height: 1.45;
+    margin: 0;
   }
   .kit-error {
     margin: 0.9rem auto 0;
@@ -321,13 +337,36 @@ const dots = [
   .hint {
     font-size: clamp(0.85rem, 1.1vw, 1rem);
     color: #8fa8b8;
+    line-height: 1.5;
+    max-width: 34em;
+    margin-inline: auto;
     margin-top: clamp(0.9rem, 1.8vw, 1.5rem);
   }
+  /* Decorative brand sign-off. Plain text — no background, border or card — so
+     it reads as part of the illustration. It's kept clear of the bright globe
+     and postcard art (which hug the bottom corners on mobile) by the extra
+     bottom padding on .signup below, so it floats in the dark navy space. */
   .tagline {
-    display: block;
-    width: min(660px, 90%);
-    height: auto;
-    margin: clamp(0.75rem, 2vw, 1.6rem) auto 0;
+    margin: clamp(1.5rem, 5vw, 2.5rem) auto 0;
+    padding-inline: 1rem;
+    text-align: center;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(1.15rem, 2.2vw, 1.7rem);
+    letter-spacing: 0.005em;
+    line-height: 1.2;
+    color: var(--sky);
+    text-shadow: 0 1px 8px rgba(9, 26, 43, 0.55);
+  }
+  /* Mobile: two intentional lines. */
+  .tagline-part { display: block; }
+  .tagline-sep { display: none; }
+
+  /* Tablet and up: one line, no wrapping. */
+  @media (min-width: 700px) {
+    .tagline { white-space: nowrap; }
+    .tagline-part { display: inline; }
+    .tagline-sep { display: inline; }
   }
 
   .setup-note {
@@ -352,10 +391,18 @@ const dots = [
     .wrap { max-width: 100%; }
   }
   @media (max-width: 760px) {
-    .signup { min-height: 0; padding-block: clamp(2.5rem, 8vw, 4rem); }
+    .signup {
+      min-height: 0;
+      padding-block: clamp(2.5rem, 8vw, 4rem);
+      /* Reserve a dark band under the content so the globe/postcard art
+         stays in the bottom corners and never sits behind the text. */
+      padding-bottom: 165px;
+    }
     .kit { flex-direction: column; gap: 0.75rem; align-items: stretch; }
     .field { flex: 1 1 auto; }
     .kit button { justify-content: center; }
+    .hint { max-width: 24rem; padding-inline: 24px; }
+    .tagline { margin-top: clamp(1.75rem, 7vw, 2.75rem); }
     .d-globe { width: 150px; opacity: 0.9; }
     .d-passport { width: 130px; opacity: 0.9; }
     .d-plane { width: 180px; top: 1%; }
