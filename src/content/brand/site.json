@@ -39,6 +39,7 @@
   ],
   "newsletter": {
     "kitAction": "https://app.kit.com/forms/9894656/subscriptions",
-    "successMessage": "You're in! Check your inbox to confirm — your free passport is on the way."
+    "successHeadline": "Your free passport is on its way! ✈️",
+    "successBody": "Check your inbox in the next few minutes. If you don’t see it, take a quick peek in Spam or Promotions."
   }
 }
