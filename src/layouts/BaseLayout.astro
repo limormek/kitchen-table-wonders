@@ -99,7 +99,19 @@ const schema = {
     <Footer />
 
     <!-- Lemon Squeezy checkout overlay: any link with class
-         "lemonsqueezy-button" opens the checkout on top of the page. -->
+         "lemonsqueezy-button" opens the checkout on top of the page.
+         Apple Pay / Google Pay only render on the hosted checkout page, not
+         in this overlay, so touch devices skip the overlay and follow the
+         anchor's href (the real hosted checkout URL) in the same tab
+         instead. Lemon.js checks for the class at click time via delegation,
+         so removing it here — before lemon.js finishes loading — is enough. -->
+    <script is:inline>
+      if (matchMedia("(pointer: coarse)").matches) {
+        document.querySelectorAll(".lemonsqueezy-button").forEach((el) => {
+          el.classList.remove("lemonsqueezy-button");
+        });
+      }
+    </script>
     <script src="https://app.lemonsqueezy.com/js/lemon.js" defer is:inline></script>
 
     <!-- Privacy-first Amplitude. Bundled as a module, so it is deferred and
