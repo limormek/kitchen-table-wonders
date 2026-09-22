@@ -8,18 +8,14 @@
   "priceLabel": "Founding Family Price",
   "productName": "Norway Country Pack",
   "images": {
-    "hero": "kids-with-passports.webp",
-    "family": "family-holding-passports.webp",
-    "craft": "kids-craft-table.webp",
-    "game": "kids-playing-game.webp",
-    "food": "norway-inspired-meal.webp",
-    "productPreview": "norway-pack-preview.webp",
+    "hero": "hero-photo.webp",
+    "family": "family-playing.webp",
     "problem": "problem-scene.webp",
     "featured": "norway-featured.webp"
   },
   "testimonial": {
     "quote": "It made what is normally a stressful afternoon trying to prep and cook while also entertaining kids easy.",
     "secondaryQuote": "It took very little effort and the kids loved it. We laughed together a lot, they felt real ownership.",
-    "attribution": "A real family's Norway adventure 🇳🇴"
+    "attribution": "Rebekah T. · Norway adventure 🇳🇴"
   }
 }

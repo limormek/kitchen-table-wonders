@@ -78,35 +78,41 @@ const dots = [
     <div class="wrap">
       <Image class="heart-top" src={heartRays} alt="" widths={[165, 330]} sizes="92px" />
 
-      <h2>Not ready to travel just yet?</h2>
-      <p class="sub sub-lead">Start your family's passport — free.</p>
-      <p class="sub">
-        Get the printable Kids' Passport to track every country
-        you visit. Print it tonight, and take your first trip whenever you're
-        ready. Plus first dibs when new countries land.
-      </p>
+      <div class="kit-state">
+        <h2>Not ready to travel just yet?</h2>
 
-      <form class="kit" action={kitAction} method="post" aria-label="Email signup"
-            data-analytics-submit="newsletter_submit" data-analytics-location="footer_signup">
-        <label class="sr-only" for="email">Email address</label>
-        <div class="field">
-          <svg class="env" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <rect x="2.4" y="4.8" width="19.2" height="14.4" rx="2.4"
-                  stroke="currentColor" stroke-width="1.9" />
-            <path d="M3.4 7 12 13.2 20.6 7" stroke="currentColor"
-                  stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-          <input id="email" name="email_address" type="email" required
-                 placeholder="you@example.com" autocomplete="email" />
+        <div class="kit-form-state">
+          <p class="sub sub-lead">Start your family's passport — free.</p>
+          <p class="sub">
+            Get the printable Kids' Passport to track every country
+            you visit. Print it tonight, and take your first trip whenever you're
+            ready. Plus first dibs when new countries land.
+          </p>
+
+          <form class="kit" action={kitAction} method="post" aria-label="Email signup"
+                data-analytics-submit="newsletter_submit" data-analytics-location="footer_signup">
+            <label class="sr-only" for="email">Email address</label>
+            <div class="field">
+              <svg class="env" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <rect x="2.4" y="4.8" width="19.2" height="14.4" rx="2.4"
+                      stroke="currentColor" stroke-width="1.9" />
+                <path d="M3.4 7 12 13.2 20.6 7" stroke="currentColor"
+                      stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              <input id="email" name="email_address" type="email" required
+                     placeholder="you@example.com" autocomplete="email" />
+            </div>
+            <button type="submit">Send me the free passport <span aria-hidden="true">→</span></button>
+          </form>
+
+          <p class="kit-error" role="alert" hidden></p>
         </div>
-        <button type="submit">Send me the free passport <span aria-hidden="true">→</span></button>
-      </form>
 
-      <div class="kit-success" hidden>
-        <p class="kit-success-head">{successHeadline}</p>
-        <p class="kit-success-body">{successBody}</p>
+        <div class="kit-success" hidden aria-live="polite">
+          <p class="kit-success-head" tabindex="-1">{successHeadline}</p>
+          <p class="kit-success-body">{successBody}</p>
+        </div>
       </div>
-      <p class="kit-error" role="alert" hidden></p>
       <p class="hint">No spam. Just good stuff for curious families.</p>
 
       {!configured && (
@@ -125,12 +131,24 @@ const dots = [
 
 <script is:inline>
   document.querySelectorAll("form.kit").forEach((form) => {
-    const wrap = form.parentElement;
-    const success = wrap.querySelector(".kit-success");
-    const error = wrap.querySelector(".kit-error");
-    const hint = wrap.querySelector(".hint");
+    const state = form.closest(".kit-state");
+    const formState = state.querySelector(".kit-form-state");
+    const success = state.querySelector(".kit-success");
+    const successHead = success.querySelector(".kit-success-head");
+    const error = form.parentElement.querySelector(".kit-error");
+    const hint = state.parentElement.querySelector(".hint");
     const btn = form.querySelector("button");
     const label = btn.textContent;
+
+    // Single source of truth: which of the two mutually-exclusive states
+    // ("form" or "success") is showing. Toggling this swaps the DOM
+    // presentation rather than leaving both states rendered at once.
+    function setSubmitted(submitted) {
+      formState.hidden = submitted;
+      success.hidden = !submitted;
+      if (hint) hint.hidden = submitted;
+      if (submitted) successHead.focus();
+    }
 
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
@@ -151,9 +169,7 @@ const dots = [
         // "quarantined" means Kit accepted it but wants extra verification —
         // still a subscribe from the visitor's point of view.
         if (data.status === "success" || data.status === "quarantined") {
-          form.hidden = true;
-          if (success) success.hidden = false;
-          if (hint) hint.hidden = true;
+          setSubmitted(true);
           return;
         }
         const messages = (data.errors && data.errors.messages) || [];
@@ -303,6 +319,8 @@ const dots = [
   .kit button:hover { background: var(--coral-deep); transform: translateY(-1px); }
   .kit button:disabled { opacity: 0.7; cursor: default; transform: none; }
 
+  .kit-form-state[hidden] { display: none; }
+
   .kit-success {
     margin-top: 1.25rem;
     max-width: 30em;
@@ -317,6 +335,9 @@ const dots = [
     line-height: 1.15;
     margin: 0 0 0.4rem;
   }
+  /* Focused programmatically on success so screen readers land here; no
+     visible focus ring needed since it's not an interactive element. */
+  .kit-success-head:focus { outline: none; }
   .kit-success-body {
     color: #c9dde7;
     font-size: clamp(0.95rem, 1.4vw, 1.1rem);
