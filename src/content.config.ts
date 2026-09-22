@@ -79,10 +79,6 @@ const countries = defineCollection({
     images: z.object({
       hero: z.string(),
       family: z.string(),
-      craft: z.string(),
-      game: z.string(),
-      food: z.string(),
-      productPreview: z.string(),
       problem: z.string().optional(),
       featured: z.string().optional(),
     }),
