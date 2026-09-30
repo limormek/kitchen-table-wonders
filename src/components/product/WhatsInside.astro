@@ -13,6 +13,7 @@ import icon4 from "../../assets/scenery/wi-icon-4.png";
 import icon5 from "../../assets/scenery/wi-icon-5.png";
 import icon6 from "../../assets/scenery/wi-icon-6.png";
 import icon7 from "../../assets/scenery/wi-icon-7.png";
+import icon8 from "../../assets/scenery/wi-icon-8.png";
 
 const { product } = Astro.props;
 // The artwork ships one illustrated icon per item, in content order.
@@ -41,12 +42,20 @@ const icons = [icon1, icon2, icon3, icon4, icon5, icon6, icon7];
       {product.whatsInside.map((item, i) => (
         <li>
           {icons[i] && (
-            <Image class="icon" src={icons[i]} alt="" widths={[100, 200]}
+            <Image class:list={["icon", icons[i] === icon7 && "icon-stamp"]}
+                   src={icons[i]} alt="" widths={[100, 200]}
                    sizes="100px" aria-hidden="true" />
           )}
           <span>{item.label}</span>
         </li>
       ))}
+      {/* Layout filler, not in the content data: only shown in the 2-column
+          grid so the 7th card isn't left alone on its row. */}
+      <li class="extra">
+        <Image class="icon icon-wide" src={icon8} alt="" widths={[124, 248]}
+               sizes="124px" aria-hidden="true" />
+        <span>Screen-free fun</span>
+      </li>
     </ul>
   </Container>
 </section>
@@ -121,6 +130,12 @@ const icons = [icon1, icon2, icon3, icon4, icon5, icon6, icon7];
     line-height: 1.25;
     color: var(--navy);
   }
+  /* Wider artwork than the 100x68 icons; match their height instead. */
+  .icon-wide { width: auto; height: calc(clamp(74px, 6.2vw, 100px) * 0.68); }
+  .grid .extra { display: none; }
+  /* The stamp sits in the right of its canvas (sparkles on the left);
+     nudge it so the stamp itself reads as centred in the card. */
+  .icon-stamp { transform: translateX(-16%); }
 
   /* ---- responsive ---- */
   /* Below this the gutter is too small for the art to read; hide it
@@ -137,5 +152,6 @@ const icons = [icon1, icon2, icon3, icon4, icon5, icon6, icon7];
   }
   @media (max-width: 620px) {
     .grid { grid-template-columns: repeat(2, 1fr); }
+    .grid .extra { display: flex; }
   }
 </style>
