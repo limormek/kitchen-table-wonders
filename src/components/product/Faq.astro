@@ -39,7 +39,7 @@ const faqs = faq?.items ?? [];
         {faqs.map((f, i) => (
           <details open={i === 0}>
             <summary>
-              <span class:list={["num", i % 2 === 0 ? "num-coral" : "num-teal"]} aria-hidden="true"></span>
+              <span class="num num-teal" aria-hidden="true"></span>
               <span class="q">{f.q}</span>
               <span class="mark" aria-hidden="true"></span>
             </summary>
@@ -141,7 +141,6 @@ const faqs = faq?.items ?? [];
   }
   .num::after { transform: translateY(-50%) rotate(90deg); transition: transform 0.15s ease; }
   details[open] .num::after { transform: translateY(-50%) rotate(0deg); }
-  .num-coral { background: var(--faq-coral); }
   .num-teal { background: #7fcbd2; }
   .q {
     font-family: var(--font-display);

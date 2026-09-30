@@ -31,7 +31,7 @@ const highlights = [
 
 <section id="pricing" class="fa">
   <Image class="scene" src={nightScene} alt="" widths={[1100, 1672, 2200]}
-         sizes="100vw" aria-hidden="true" />
+         sizes="(max-width: 900px) 200vw, 100vw" aria-hidden="true" />
 
   <div class="inner">
     <div class="media">
@@ -54,8 +54,8 @@ const highlights = [
       </h2>
       <p class="tagline">Land of fjords, trolls &amp; trails</p>
       <p class="lede">
-        Majestic nature, playful folklore, cozy traditions and delicious food —
-        a screen-free adventure your whole family will love.
+        Majestic nature, playful folklore, cozy traditions and delicious food.
+        A screen-free adventure your whole family will love.
       </p>
 
       <ul class="strip">
@@ -321,5 +321,22 @@ const highlights = [
     .strip { grid-template-columns: repeat(2, 1fr); }
     .strip li { border-left: 0 !important; }
     .reassure { grid-template-columns: 1fr; }
+  }
+  /* Single column makes the section tall, and object-fit: cover would scale
+     the artwork by height, lifting its baked-in "The world is closer than you
+     think." up behind the reassurance list. Size it by width instead so the
+     tagline sits a predictable distance (~20vw) above the bottom edge, pad
+     the copy clear of it, and fade the image's top into the section navy. */
+  @media (max-width: 900px) {
+    .scene {
+      inset: auto auto 0 50%;
+      width: 200vw;
+      max-width: none;
+      height: auto;
+      transform: translateX(-50%);
+      -webkit-mask-image: linear-gradient(to bottom, transparent, #000 25%);
+      mask-image: linear-gradient(to bottom, transparent, #000 25%);
+    }
+    .inner { padding-bottom: 29vw; }
   }
 </style>
