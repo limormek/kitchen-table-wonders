@@ -21,6 +21,14 @@ import * as amplitude from "@amplitude/analytics-browser";
  *   - No identify(), no setUserId(), no user properties. Amplitude's anonymous
  *     device id is the only identifier.
  *   - No Session Replay and no plugins — nothing records screen content.
+ *   - fetchRemoteConfig is OFF so the settings in this file are final. With it
+ *     on, autocapture toggled in Amplitude's web UI would override them (e.g.
+ *     silently re-enabling element-click capture).
+ *   - The anonymous device id lives in a first-party cookie (AMP_<key prefix>,
+ *     365 days), Amplitude's default, set explicitly here because the privacy
+ *     policy describes it. A cookie on the top-level domain is shared by
+ *     kitchentablewonders.com and www., which both serve the site; per-origin
+ *     localStorage would count one visitor as two.
  */
 
 const API_KEY = import.meta.env.PUBLIC_AMPLITUDE_API_KEY as string | undefined;
@@ -102,6 +110,9 @@ export function initAnalytics(): void {
   if (!API_KEY) return;
 
   amplitude.init(API_KEY, {
+    // Keep in sync with the privacy policy's "How we use analytics" section.
+    identityStorage: "cookie",
+    fetchRemoteConfig: false,
     // trackingOptions left at defaults so Amplitude can infer coarse geo
     // (Country / Region / City) from the request IP. No geo is sent from the
     // client and the raw IP is not retained by Amplitude.
