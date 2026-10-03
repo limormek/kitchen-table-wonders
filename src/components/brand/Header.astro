@@ -15,12 +15,16 @@ const { name, nav } = brand.data;
       </a>
 
       <nav class="nav" aria-label="Primary">
-        {nav.map((item) => <a href={item.href}>{item.label}</a>)}
+        {nav.map((item) => (
+          <a href={item.href} data-analytics-event="nav_click" data-analytics-location="header"
+             data-analytics-target={item.href.split("#")[1] ?? item.href}>{item.label}</a>
+        ))}
       </nav>
 
-      <span class="header-cta"><Button href="/#signup" data-analytics-event="nav_join_our_world">Join our world →</Button></span>
+      <span class="header-cta"><Button href="/#signup" data-analytics-event="nav_join_our_world" data-analytics-location="header">Join our world →</Button></span>
 
-      <button class="menu-toggle" aria-label="Open menu" aria-expanded="false">
+      <button class="menu-toggle" aria-label="Open menu" aria-expanded="false"
+              data-analytics-event="nav_menu_open">
         <span></span><span></span><span></span>
       </button>
     </div>

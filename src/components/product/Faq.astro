@@ -14,7 +14,7 @@ const faqs = faq?.items ?? [];
 ---
 
 {faq && (
-  <section id="faq" class="faq">
+  <section id="faq" class="faq" data-analytics-view="faq">
     <svg class="wave wave-top" viewBox="0 0 1916 40" preserveAspectRatio="none" aria-hidden="true">
       <path d="M0 0 L1916 0 L1916 14 C 1700 32, 1480 8, 1240 18 S 820 36, 560 22 S 210 4, 0 20 Z"
             fill="#d4f2f9" />
@@ -38,7 +38,7 @@ const faqs = faq?.items ?? [];
       <div class="list">
         {faqs.map((f, i) => (
           <details open={i === 0}>
-            <summary>
+            <summary data-analytics-event="faq_open" data-analytics-question={f.q}>
               <span class="num num-teal" aria-hidden="true"></span>
               <span class="q">{f.q}</span>
               <span class="mark" aria-hidden="true"></span>

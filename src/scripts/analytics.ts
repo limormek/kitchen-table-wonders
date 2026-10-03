@@ -65,13 +65,50 @@ export function track(eventName: string, props?: EventProps): void {
   amplitude.track(eventName, scrub(props));
 }
 
+/** data-analytics-* attributes that name the event rather than describe it. */
+const RESERVED = new Set(["analyticsEvent", "analyticsSubmit", "analyticsView"]);
+
+/**
+ * Every other data-analytics-* attribute on the element becomes one static
+ * property: data-analytics-location="hero" → { location: "hero" }. These are
+ * hand-written in markup, never read from user input.
+ */
+function staticProps(el: HTMLElement): EventProps | undefined {
+  const props: EventProps = {};
+  for (const [key, value] of Object.entries(el.dataset)) {
+    if (!key.startsWith("analytics") || RESERVED.has(key) || value === undefined) continue;
+    const prop = key
+      .slice("analytics".length)
+      .replace(/^[A-Z]/, (c) => c.toLowerCase())
+      .replace(/[A-Z]/g, (c) => `_${c.toLowerCase()}`);
+    props[prop] = value;
+  }
+  return Object.keys(props).length ? props : undefined;
+}
+
+/**
+ * A click on a disclosure that is already open is a close, which we don't
+ * count: <summary> inside an open <details>, or a button with
+ * aria-expanded="true". Capture phase runs before the page's own toggle
+ * handlers, so this reads the state from before the click.
+ */
+function isClosingClick(el: HTMLElement): boolean {
+  if (el.tagName === "SUMMARY") return !!el.parentElement?.hasAttribute("open");
+  return el.getAttribute("aria-expanded") === "true";
+}
+
 /**
  * Delegated listeners so new events are a markup change, not a code change:
  *   <a  data-analytics-event="cta_checkout">        → tracked on click
  *   <form data-analytics-submit="newsletter_submit"> → tracked on submit
- * An optional data-analytics-location adds one static property.
- * Both listeners are passive observers — they never preventDefault, never read
+ *   <section data-analytics-view="pricing">         → section_view, once per page
+ * Any other data-analytics-* attribute adds one static property (see staticProps).
+ * All listeners are passive observers — they never preventDefault, never read
  * field values, and never interfere with existing handlers.
+ *
+ * Inline scripts that can't import this module (e.g. the Kit form) report
+ * outcomes with:
+ *   document.dispatchEvent(new CustomEvent("analytics:track", { detail: { name, props } }))
  */
 function wireDomEvents(): void {
   document.addEventListener(
@@ -80,9 +117,8 @@ function wireDomEvents(): void {
       const el = (event.target as Element | null)?.closest?.("[data-analytics-event]");
       if (!(el instanceof HTMLElement)) return;
       const name = el.dataset.analyticsEvent;
-      if (!name) return;
-      const location = el.dataset.analyticsLocation;
-      track(name, location ? { location } : undefined);
+      if (!name || isClosingClick(el)) return;
+      track(name, staticProps(el));
     },
     { capture: true, passive: true },
   );
@@ -94,12 +130,34 @@ function wireDomEvents(): void {
       if (!(form instanceof HTMLFormElement)) return;
       const name = form.dataset.analyticsSubmit;
       if (!name) return;
-      const location = form.dataset.analyticsLocation;
-      // Only the event name and a static label — never form field values.
-      track(name, location ? { location } : undefined);
+      // Only the event name and static labels — never form field values.
+      track(name, staticProps(form));
     },
     { capture: true, passive: true },
   );
+
+  document.addEventListener("analytics:track", (event) => {
+    const detail = (event as CustomEvent<{ name?: unknown; props?: EventProps }>).detail;
+    if (typeof detail?.name === "string") track(detail.name, detail.props);
+  });
+
+  // "Did they reach it?": fires once per page load when a section crosses the
+  // middle of the viewport, which works for sections taller than the screen.
+  const sections = document.querySelectorAll<HTMLElement>("[data-analytics-view]");
+  if (sections.length && "IntersectionObserver" in window) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          const el = entry.target as HTMLElement;
+          observer.unobserve(el);
+          track("section_view", { section: el.dataset.analyticsView ?? "", ...staticProps(el) });
+        }
+      },
+      { rootMargin: "-50% 0px -50% 0px" },
+    );
+    sections.forEach((el) => observer.observe(el));
+  }
 }
 
 export function initAnalytics(): void {
