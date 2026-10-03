@@ -71,6 +71,36 @@ all of Kitchen Table Wonders), so Norway buyers are reachable when product #2
 ships — also turn on Lemon Squeezy's built-in Kit integration to add buyers
 automatically.
 
+## Tracking links (friends, creators, campaigns)
+
+Every shared link should carry UTM tags so Amplitude and Lemon Squeezy know
+who sent the visitor. Always use **lowercase slugs** (`dana`, `mamatravels`).
+
+| Who | Short link | Expands to |
+|---|---|---|
+| Friend | `kitchentablewonders.com/f/dana` | `/?utm_source=dana&utm_medium=friend&utm_campaign=friends` |
+| Creator | `kitchentablewonders.com/c/mamatravels` | `/?utm_source=mamatravels&utm_medium=creator&utm_campaign=creators` |
+
+The short links are Cloudflare Pages redirects in `public/_redirects`; any
+slug works, no config per person. For a specific post or collab, write the
+full link and add `utm_content` (which post) or your own `utm_campaign`, e.g.
+`/?utm_source=mamatravels&utm_medium=creator&utm_campaign=norway-launch&utm_content=reel1`.
+
+Tag meaning: `utm_medium` = the channel type (`friend`, `creator`, later
+`email`, `instagram`…), `utm_source` = exactly who, `utm_campaign` = the push.
+
+**Where it shows up**
+
+- **Amplitude**: user properties `utm_*` (last link they came through) and
+  `initial_utm_*` (the very first), plus `utm_*` event properties on the
+  events of that visit. Segment any chart or funnel by them, e.g.
+  Page Viewed → `section_view` (pricing) → `cta_checkout` grouped by
+  `initial_utm_source`, filtered to `initial_utm_medium = friend`.
+- **Lemon Squeezy**: checkout links get `checkout[custom][utm_*]`, so every
+  order's custom data (webhook `meta.custom_data`) names the friend/creator,
+  even for visitors whose ad blocker stops Amplitude. Kept for 30 days after
+  the tagged visit (`src/scripts/attribution.ts`).
+
 ## Deploy to Cloudflare Pages
 
 - Framework preset: **Astro**

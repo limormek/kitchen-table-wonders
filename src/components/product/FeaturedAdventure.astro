@@ -29,7 +29,7 @@ const highlights = [
 ];
 ---
 
-<section id="pricing" class="fa">
+<section id="pricing" class="fa" data-analytics-view="pricing">
   <Image class="scene" src={nightScene} alt="" widths={[1100, 1672, 2200]}
          sizes="(max-width: 900px) 200vw, 100vw" aria-hidden="true" />
 
@@ -73,7 +73,8 @@ const highlights = [
           <p class="amount">${priceStr}</p>
         </div>
         <Button href={buyHref} class="cta" checkout={buyReady}
-                data-analytics-event="cta_checkout">
+                data-analytics-event="cta_checkout" data-analytics-location="pricing"
+                data-analytics-country={adventure.name.toLowerCase()}>
           Take my family to {adventure.name} <span aria-hidden="true">→</span>
         </Button>
       </div>

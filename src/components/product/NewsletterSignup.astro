@@ -48,7 +48,7 @@ const dots = [
 ];
 ---
 
-<section id="signup" class="signup">
+<section id="signup" class="signup" data-analytics-view="signup">
   <div class="art" aria-hidden="true">
     <Image class="d d-globe" src={globeSignpost} alt="" widths={[400, 800]} sizes="24vw" />
     <Image class="d d-plane" src={airplaneTrail} alt="" widths={[522, 1044]} sizes="31vw" />
@@ -139,6 +139,13 @@ const dots = [
     const hint = state.parentElement.querySelector(".hint");
     const btn = form.querySelector("button");
     const label = btn.textContent;
+    // Outcome events for analytics.ts. Static values only: never the address
+    // and never Kit's error text (it can echo what was typed).
+    const formLocation = form.dataset.analyticsLocation;
+    const report = (name, props) =>
+      document.dispatchEvent(new CustomEvent("analytics:track", {
+        detail: { name, props: { location: formLocation, ...props } },
+      }));
 
     // Single source of truth: which of the two mutually-exclusive states
     // ("form" or "success") is showing. Toggling this swaps the DOM
@@ -153,6 +160,7 @@ const dots = [
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
       error.hidden = true;
+      let rejected = false;
       btn.disabled = true;
       btn.textContent = "Sending…";
 
@@ -169,12 +177,15 @@ const dots = [
         // "quarantined" means Kit accepted it but wants extra verification —
         // still a subscribe from the visitor's point of view.
         if (data.status === "success" || data.status === "quarantined") {
+          report("newsletter_signup_success", { status: data.status });
           setSubmitted(true);
           return;
         }
         const messages = (data.errors && data.errors.messages) || [];
+        rejected = true;
         throw new Error(messages.join(" ") || "That didn't go through.");
       } catch (err) {
+        report("newsletter_signup_error", { reason: rejected ? "rejected" : "network" });
         error.textContent =
           (err && err.message) || "Sorry, that didn't go through. Please try again.";
         error.hidden = false;

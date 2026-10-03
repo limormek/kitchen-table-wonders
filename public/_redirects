@@ -1,0 +1,5 @@
+# Short tracking links (Cloudflare Pages). Each one lands on the homepage with
+# UTM tags that Amplitude and the checkout attribution pick up. Use lowercase
+# slugs: kitchentablewonders.com/f/dana, kitchentablewonders.com/c/mamatravels
+/f/:code    /?utm_source=:code&utm_medium=friend&utm_campaign=friends     302
+/c/:handle  /?utm_source=:handle&utm_medium=creator&utm_campaign=creators 302

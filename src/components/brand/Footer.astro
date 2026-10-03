@@ -18,7 +18,10 @@ const year = new Date().getFullYear();
       </a>
 
       <nav class="links" aria-label="Footer">
-        {footerLinks.map((l) => <a href={l.href}>{l.label}</a>)}
+        {footerLinks.map((l) => l.href.startsWith("mailto:")
+          ? <a href={l.href} data-analytics-event="contact_email_click" data-analytics-location="footer">{l.label}</a>
+          : <a href={l.href} data-analytics-event="footer_link_click"
+               data-analytics-target={l.href.replace(/^\/#?/, "")}>{l.label}</a>)}
       </nav>
 
       <Image class="magic" src={magic} alt="Let's make more magic"
