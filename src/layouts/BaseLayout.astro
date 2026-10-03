@@ -115,9 +115,13 @@ const schema = {
     <script src="https://app.lemonsqueezy.com/js/lemon.js" defer is:inline></script>
 
     <!-- Privacy-first Amplitude. Bundled as a module, so it is deferred and
-         never blocks rendering. No-ops in dev and when the key is unset. -->
+         never blocks rendering. No-ops in dev and when the key is unset.
+         Attribution runs regardless, so checkout links carry UTM tags even
+         when an ad blocker stops Amplitude. -->
     <script>
+      import { initAttribution } from "../scripts/attribution";
       import { initAnalytics } from "../scripts/analytics";
+      initAttribution();
       initAnalytics();
     </script>
   </body>

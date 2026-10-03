@@ -14,7 +14,10 @@ import * as amplitude from "@amplitude/analytics-browser";
  *     PII we are choosing to send from the client — it is inherent to any HTTP
  *     request. We never call identify()/setUserId(), so this geo data stays
  *     attached to the anonymous device id only.
- *   - autocapture: pageViews + sessions ONLY. elementInteractions and
+ *   - autocapture: pageViews, sessions and attribution. Attribution stores
+ *     the UTM tags of the link a visitor arrived through as user properties:
+ *     first touch (initial_utm_*) and last touch (utm_*), so every later
+ *     event can be split by friend / creator. elementInteractions and
  *     formInteractions are OFF because they scrape clicked-element text and
  *     form field metadata, which can sweep up typed values. We fire our own
  *     explicit events instead. fileDownloads is off too (nothing to download).
@@ -177,7 +180,13 @@ export function initAnalytics(): void {
     autocapture: {
       pageViews: true,
       sessions: true,
-      attribution: false,
+      attribution: {
+        // A visit from our own pages, or back from checkout, isn't a new
+        // traffic source; without this it would overwrite the friend/creator
+        // who sent them (last touch).
+        excludeReferrers: [/(^|\.)kitchentablewonders\.com$/, /(^|\.)lemonsqueezy\.com$/],
+        excludeInternalReferrers: true,
+      },
       elementInteractions: false,
       formInteractions: false,
       fileDownloads: false,
