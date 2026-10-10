@@ -64,32 +64,45 @@ const countries = defineCollection({
     pattern: "**/countries/*.json",
     base: "./src/content/products",
   }),
-  schema: z.object({
-    slug: z.string(),
-    productSlug: z.string(),
-    name: z.string(),
-    emoji: z.string().optional(), // label fallback only; prefer an SVG flag for display
-    status: z.enum(["available", "coming-soon"]).default("available"),
-    price: z.number(), // DISPLAY price only. Lemon Squeezy is the source of truth.
-    priceLabel: z.string().optional(), // e.g. "Founding Family Price"
-    productName: z.string(), // must match your Lemon Squeezy product name
-    // Optional per-country override. Normally left out so the shared
-    // PUBLIC_LEMONSQUEEZY_CHECKOUT_URL env var is used instead.
-    checkoutUrl: z.string().optional(),
-    images: z.object({
-      hero: z.string(),
-      family: z.string(),
-      problem: z.string().optional(),
-      featured: z.string().optional(),
+  schema: z
+    .object({
+      slug: z.string(),
+      productSlug: z.string(),
+      name: z.string(),
+      emoji: z.string().optional(), // label fallback only; prefer an SVG flag for display
+      status: z.enum(["available", "coming-soon"]).default("available"),
+      // DISPLAY price only. Lemon Squeezy is the source of truth. Required
+      // once a kit is "available" (see refine below); coming-soon kits may omit it.
+      price: z.number().optional(),
+      priceLabel: z.string().optional(), // e.g. "Founding Family Price"
+      productName: z.string(), // must match your Lemon Squeezy product name
+      // Optional per-country override. Normally left out so the shared
+      // PUBLIC_LEMONSQUEEZY_CHECKOUT_URL env var is used instead.
+      checkoutUrl: z.string().optional(),
+      // Coming-soon kits: the Kit form that collects their waitlist. Same
+      // format as brand newsletter.kitAction, but a SEPARATE form.
+      waitlistKitAction: z.string().optional(),
+      images: z.object({
+        hero: z.string(),
+        family: z.string().optional(),
+        problem: z.string().optional(),
+        featured: z.string().optional(),
+        passport: z.string().optional(),
+        activity: z.string().optional(),
+        food: z.string().optional(),
+      }),
+      testimonial: z
+        .object({
+          quote: z.string(),
+          secondaryQuote: z.string().optional(),
+          attribution: z.string(),
+        })
+        .optional(),
+    })
+    .refine((c) => c.status !== "available" || c.price !== undefined, {
+      message: "An available country needs a price.",
+      path: ["price"],
     }),
-    testimonial: z
-      .object({
-        quote: z.string(),
-        secondaryQuote: z.string().optional(),
-        attribution: z.string(),
-      })
-      .optional(),
-  }),
 });
 
 export const collections = { brand, products, countries };
