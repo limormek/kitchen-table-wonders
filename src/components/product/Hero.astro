@@ -54,6 +54,10 @@ const chipTone = { download: "coral", printer: "teal", family: "teal", heart: "c
            data-analytics-country={country.name.toLowerCase()}>
           Explore {country.name} · ${priceStr} <span aria-hidden="true">→</span>
         </a>
+        <a class="alt-link" href="/#signup"
+           data-analytics-event="hero_free_passport_link" data-analytics-location="hero">
+          Not ready yet? Get the free passport
+        </a>
 
         <ul class="benefits">
           {product.heroBenefits.map((b) => (
@@ -220,6 +224,19 @@ const chipTone = { download: "coral", printer: "teal", family: "teal", heart: "c
     transition: background 0.12s ease, transform 0.12s ease;
   }
   .cta:hover { background: var(--cta-hover); transform: translateY(-1px); }
+  /* Quiet secondary path to the free passport; the buy button stays primary. */
+  .alt-link {
+    display: block;
+    width: fit-content;
+    margin: -0.35rem 0 clamp(1.1rem, 2.1vw, 1.6rem);
+    color: var(--navy);
+    font-size: clamp(0.9rem, 1vw, 1rem);
+    text-decoration: underline;
+    text-decoration-color: var(--teal);
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 3px;
+  }
+  .alt-link:hover { color: var(--teal-deep); }
 
   .benefits {
     list-style: none;

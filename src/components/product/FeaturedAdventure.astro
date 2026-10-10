@@ -149,6 +149,12 @@ const highlights = [
   }
 
   .inner {
+    /* .inner is centred with auto margins inside a grid, which would make it
+       shrink-to-fit its content. Its content is the lazy pack photo, so the
+       section changed height when the photo arrived and an in-progress
+       #signup scroll stopped short. A definite width lets the img's
+       width/height attributes reserve the space up front. */
+    width: 100%;
     max-width: 1500px;
     margin-inline: auto;
     /* Deep bottom padding keeps the copy clear of "The world is closer than
@@ -313,7 +319,7 @@ const highlights = [
   }
   @media (max-width: 900px) {
     .inner { grid-template-columns: 1fr; gap: 2rem; }
-    .media { max-width: 380px; margin-inline: auto; }
+    .media { width: 100%; max-width: 380px; margin-inline: auto; }
     .title { justify-content: flex-start; }
     .buy { flex-direction: column; align-items: stretch; text-align: center; }
     .price { padding-right: 0; padding-bottom: 0.6rem; border-right: 0; border-bottom: 1px solid rgba(31, 61, 90, 0.16); }
