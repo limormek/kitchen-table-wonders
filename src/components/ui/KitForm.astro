@@ -1,0 +1,330 @@
+---
+/**
+ * A Kit (ConvertKit) email form with real success / failure states.
+ * Used by the homepage newsletter and the Italy waitlist; each passes its
+ * own Kit form URL, copy and analytics labels.
+ *
+ * IMPORTANT: a plain HTML form POST to a Kit form URL does NOT subscribe
+ * anyone. It 302s to a generic success page for any input at all, even an
+ * empty address. Kit's v5 forms only really subscribe when the request asks
+ * for JSON, exactly as their own ck.5.js does:
+ *     Accept: application/json  +  X-CKJS-Version: 6
+ * which returns {"status":"success"|"quarantined"|...,"errors":{...}}.
+ * The script below does that with fetch(), so success and failure are both
+ * real. The endpoint sends Access-Control-Allow-Origin: *, so no proxy or
+ * third-party script is needed. Our own markup, so none of Kit's formkit-*
+ * CSS lands on the page.
+ *
+ * Slots: "head" stays visible after success (e.g. the section heading);
+ * the default slot is lead copy that is swapped out for the success message.
+ */
+interface Props {
+  kitAction: string;
+  buttonText: string;
+  successHeadline: string;
+  successBody?: string;
+  smallPrint: string;
+  /** Appends "See our Privacy Policy." (linked) to the small print. */
+  privacyLink?: boolean;
+  /** data-analytics-submit event name. Never carries the address. */
+  submitEvent: string;
+  /** data-analytics-location: a static label, e.g. "footer_signup". */
+  location: string;
+  /** Visual treatment for the section it sits on. */
+  tone?: "dark" | "light";
+  /** Field and button stacked on every screen size (for narrow columns). */
+  stacked?: boolean;
+  inputId?: string;
+  formLabel?: string;
+}
+
+const {
+  kitAction,
+  buttonText,
+  successHeadline,
+  successBody,
+  smallPrint,
+  privacyLink = false,
+  submitEvent,
+  location,
+  tone = "dark",
+  stacked = false,
+  inputId = "email",
+  formLabel = "Email signup",
+} = Astro.props;
+---
+
+<div class:list={["kit-state", `tone-${tone}`]}>
+  <slot name="head" />
+
+  <div class="kit-form-state">
+    <slot />
+
+    <form class:list={["kit", stacked && "stacked"]} action={kitAction} method="post" aria-label={formLabel}
+          data-analytics-submit={submitEvent} data-analytics-location={location}>
+      <label class="sr-only" for={inputId}>Email address</label>
+      <div class="field">
+        <svg class="env" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="2.4" y="4.8" width="19.2" height="14.4" rx="2.4"
+                stroke="currentColor" stroke-width="1.9" />
+          <path d="M3.4 7 12 13.2 20.6 7" stroke="currentColor"
+                stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        <input id={inputId} name="email_address" type="email" required
+               placeholder="you@example.com" autocomplete="email" />
+      </div>
+      <button type="submit">{buttonText} <span aria-hidden="true">→</span></button>
+    </form>
+
+    <p class="kit-error" role="alert" hidden></p>
+  </div>
+
+  <div class="kit-success" hidden aria-live="polite">
+    <p class="kit-success-head" tabindex="-1">{successHeadline}</p>
+    {successBody && <p class="kit-success-body">{successBody}</p>}
+  </div>
+</div>
+<p class:list={["hint", `tone-${tone}`]}>{smallPrint}{privacyLink && <Fragment> See our <a href="/privacy">Privacy Policy</a>.</Fragment>}</p>
+
+<script is:inline>
+  // Inline (not bundled) so the handler is attached as soon as the form is
+  // parsed: a submit that slips through before it would POST natively, which
+  // Kit answers with a fake success. The guard keeps a second KitForm on the
+  // same page from binding every form twice.
+  document.querySelectorAll("form.kit").forEach((form) => {
+    if (form.dataset.kitBound) return;
+    form.dataset.kitBound = "true";
+    const state = form.closest(".kit-state");
+    const formState = state.querySelector(".kit-form-state");
+    const success = state.querySelector(".kit-success");
+    const successHead = success.querySelector(".kit-success-head");
+    const error = form.parentElement.querySelector(".kit-error");
+    const hint = state.nextElementSibling?.matches(".hint") ? state.nextElementSibling : null;
+    const btn = form.querySelector("button");
+    const label = btn.textContent;
+    // Outcome events for analytics.ts. Static values only: never the address
+    // and never Kit's error text (it can echo what was typed).
+    const formLocation = form.dataset.analyticsLocation;
+    const report = (name, props) =>
+      document.dispatchEvent(new CustomEvent("analytics:track", {
+        detail: { name, props: { location: formLocation, ...props } },
+      }));
+
+    // Single source of truth: which of the two mutually-exclusive states
+    // ("form" or "success") is showing. Toggling this swaps the DOM
+    // presentation rather than leaving both states rendered at once.
+    function setSubmitted(submitted) {
+      formState.hidden = submitted;
+      success.hidden = !submitted;
+      if (hint) hint.hidden = submitted;
+      if (submitted) successHead.focus();
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      error.hidden = true;
+      let rejected = false;
+      btn.disabled = true;
+      btn.textContent = "Sending…";
+
+      try {
+        const body = new FormData(form);
+        body.append("ckjs_version", "6");
+        const res = await fetch(form.action, {
+          method: "POST",
+          body,
+          headers: { Accept: "application/json", "X-CKJS-Version": "6" },
+        });
+        const data = await res.json();
+
+        // "quarantined" means Kit accepted it but wants extra verification —
+        // still a subscribe from the visitor's point of view.
+        if (data.status === "success" || data.status === "quarantined") {
+          report("newsletter_signup_success", { status: data.status });
+          setSubmitted(true);
+          return;
+        }
+        const messages = (data.errors && data.errors.messages) || [];
+        rejected = true;
+        throw new Error(messages.join(" ") || "That didn't go through.");
+      } catch (err) {
+        report("newsletter_signup_error", { reason: rejected ? "rejected" : "network" });
+        error.textContent =
+          (err && err.message) || "Sorry, that didn't go through. Please try again.";
+        error.hidden = false;
+        btn.disabled = false;
+        btn.textContent = label;
+      }
+    });
+  });
+</script>
+
+<style>
+  /* Dark: the homepage newsletter's navy section (original values).
+     Light: cream/white sections. */
+  .tone-dark {
+    --kf-ink: var(--deep-navy);
+    --kf-btn: #fca995;
+    --kf-btn-lip: #f0836b;
+    --kf-field: #f9f6f3;
+    --kf-ring: rgba(255, 255, 255, 0.13);
+    --kf-ring-focus: rgba(255, 255, 255, 0.32);
+    --kf-divider: #d9d2c9;
+    --kf-success-head: #fff;
+    --kf-success-body: #c9dde7;
+    --kf-error: #ffd7cc;
+    --kf-error-bg: rgba(252, 169, 149, 0.16);
+    --kf-error-border: rgba(252, 169, 149, 0.5);
+    --kf-hint: #8fa8b8;
+  }
+  .tone-light {
+    --kf-ink: var(--navy);
+    --kf-btn: var(--coral);
+    --kf-btn-lip: var(--coral-deep);
+    --kf-field: #fff;
+    --kf-ring: rgba(31, 61, 90, 0.09);
+    --kf-ring-focus: rgba(78, 156, 166, 0.45);
+    --kf-divider: var(--line);
+    --kf-success-head: var(--navy);
+    --kf-success-body: var(--navy-soft);
+    --kf-error: #8a3a26;
+    --kf-error-bg: rgba(255, 177, 153, 0.18);
+    --kf-error-border: rgba(245, 140, 111, 0.55);
+    --kf-hint: var(--muted);
+  }
+
+  /* ---- form ---- */
+  .kit {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    margin-top: clamp(1.5rem, 3.2vw, 2.6rem);
+  }
+  .kit[hidden] { display: none; }
+  .field {
+    flex: 0 1 670px;
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    background: var(--kf-field);
+    border-radius: 999px;
+    padding: 0 1.6rem;
+    height: clamp(3.1rem, 5.3vw, 4.1rem);
+    box-shadow: 0 0 0 5px var(--kf-ring);
+  }
+  .env {
+    flex: none;
+    width: 1.75rem;
+    height: 1.75rem;
+    color: var(--kf-ink);
+    padding-right: 0.9rem;
+    border-right: 1px solid var(--kf-divider);
+    box-sizing: content-box;
+  }
+  .kit input {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    background: none;
+    padding: 0;
+    color: var(--kf-ink);
+    font-family: var(--font-body);
+    font-size: clamp(1rem, 1.35vw, 1.15rem);
+  }
+  .kit input::placeholder { color: #8b9aa5; }
+  /* Suppress the ring for mouse users only — keyboard focus keeps the
+     global :focus-visible outline. */
+  .kit input:focus:not(:focus-visible) { outline: none; }
+  .field:focus-within { box-shadow: 0 0 0 5px var(--kf-ring-focus); }
+
+  .kit button {
+    flex: none;
+    border: 0;
+    cursor: pointer;
+    background: var(--kf-btn);
+    color: var(--kf-ink);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1rem, 1.4vw, 1.2rem);
+    padding-inline: clamp(1.4rem, 2.6vw, 2.4rem);
+    height: clamp(3.1rem, 5.3vw, 4.1rem);
+    border-radius: 999px;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    /* soft lip along the bottom, as in the artwork */
+    box-shadow: inset 0 -4px 0 var(--kf-btn-lip);
+    transition: background 0.12s ease, transform 0.12s ease;
+  }
+  .kit button:hover { background: var(--coral-deep); transform: translateY(-1px); }
+  .kit button:disabled { opacity: 0.7; cursor: default; transform: none; }
+
+  .kit-form-state[hidden] { display: none; }
+
+  .kit-success {
+    margin-top: 1.25rem;
+    max-width: 30em;
+    margin-inline: auto;
+  }
+  .kit-success[hidden] { display: none; }
+  .kit-success-head {
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--kf-success-head);
+    font-size: clamp(1.25rem, 2.4vw, 1.6rem);
+    line-height: 1.15;
+    margin: 0 0 0.4rem;
+  }
+  /* Focused programmatically on success so screen readers land here; no
+     visible focus ring needed since it's not an interactive element. */
+  .kit-success-head:focus { outline: none; }
+  .kit-success-body {
+    color: var(--kf-success-body);
+    font-size: clamp(0.95rem, 1.4vw, 1.1rem);
+    line-height: 1.45;
+    margin: 0;
+  }
+  .kit-error {
+    margin: 0.9rem auto 0;
+    max-width: 34em;
+    color: var(--kf-error);
+    background: var(--kf-error-bg);
+    border: 1px solid var(--kf-error-border);
+    border-radius: 12px;
+    padding: 0.6rem 0.9rem;
+    font-size: clamp(0.85rem, 1vw, 0.98rem);
+  }
+  .kit-error[hidden] { display: none; }
+  .hint {
+    font-size: clamp(0.85rem, 1.1vw, 1rem);
+    color: var(--kf-hint);
+    line-height: 1.5;
+    max-width: 34em;
+    margin-inline: auto;
+    margin-top: clamp(0.9rem, 1.8vw, 1.5rem);
+  }
+  .hint[hidden] { display: none; }
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+
+  /* Light tone sits in left-aligned layouts. */
+  .tone-light .kit-success,
+  .tone-light .kit-error,
+  .hint.tone-light { margin-inline: 0; }
+
+  /* Stacked: full-width field over a full-width button. */
+  .kit.stacked { flex-direction: column; gap: 0.75rem; align-items: stretch; }
+  .kit.stacked .field { flex: none; }
+  .kit.stacked button { justify-content: center; }
+
+  /* ---- responsive ---- */
+  @media (max-width: 760px) {
+    .kit { flex-direction: column; gap: 0.75rem; align-items: stretch; }
+    .field { flex: 1 1 auto; }
+    .kit button { justify-content: center; }
+    .hint.tone-dark { max-width: 24rem; padding-inline: 24px; }
+  }
+</style>

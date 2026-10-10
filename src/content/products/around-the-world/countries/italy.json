@@ -1,0 +1,15 @@
+{
+  "slug": "italy",
+  "productSlug": "around-the-world",
+  "name": "Italy",
+  "emoji": "🇮🇹",
+  "status": "coming-soon",
+  "productName": "Italy Country Pack",
+  "waitlistKitAction": "https://app.kit.com/forms/10028199/subscriptions",
+  "images": {
+    "hero": "italy-hero.webp",
+    "passport": "italy-passport.webp",
+    "activity": "italy-activity.webp",
+    "food": "italy-food.webp"
+  }
+}

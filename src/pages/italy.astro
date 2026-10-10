@@ -1,0 +1,418 @@
+---
+import { getEntry } from "astro:content";
+import { Image } from "astro:assets";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Container from "../components/ui/Container.astro";
+import Button from "../components/ui/Button.astro";
+import KitForm from "../components/ui/KitForm.astro";
+import Sparkle from "../components/doodles/Sparkle.astro";
+import Heart from "../components/doodles/Heart.astro";
+import Icon from "../components/doodles/Icon.astro";
+import FlagItaly from "../components/doodles/FlagItaly.astro";
+import FlagNorway from "../components/doodles/FlagNorway.astro";
+import { productImage } from "../lib/productImages";
+import { checkoutUrl, isCheckoutReady } from "../lib/links";
+
+import planeTrail from "../assets/scenery/hero-plane-trail.png";
+import raysL from "../assets/scenery/wi-rays-l.png";
+import raysR from "../assets/scenery/wi-rays-r.png";
+
+// Italy is a coming-soon SKU: this page collects its waitlist through its own
+// Kit form, and sells Norway (available now) in the meantime.
+const italy = (await getEntry("countries", "italy")).data;
+const norway = (await getEntry("countries", "norway")).data;
+
+const heroImage = productImage(italy.images.hero);
+const passportImage = productImage(italy.images.passport);
+const activityImage = productImage(italy.images.activity);
+const foodImage = productImage(italy.images.food);
+const norwayImage = productImage(norway.images.featured ?? norway.images.hero);
+
+const waitlistAction = italy.waitlistKitAction ?? "";
+const waitlistReady = waitlistAction !== "" && !waitlistAction.includes("REPLACE_");
+if (!waitlistReady && import.meta.env.PROD) {
+  console.warn(
+    "[italy] waitlistKitAction is still a placeholder: the /italy form will not subscribe anyone.",
+  );
+}
+
+const priceStr = norway.price?.toFixed(2);
+const buyHref = checkoutUrl(norway.checkoutUrl);
+const buyReady = isCheckoutReady(norway.checkoutUrl);
+---
+
+<BaseLayout
+  title="Next stop: Italy | Kitchen Table Wonders"
+  description="Join the waitlist for our Italy family adventure kit. Pizza night, passport stamps, and games for the whole family."
+  ogImage="/social/og-italy.jpg"
+  ogImageAlt="Next stop: Italy. The Kitchen Table Wonders Italy kit is coming soon."
+>
+  <!-- A) Hero + waitlist -->
+  <section class="it-hero" data-analytics-view="italy_hero">
+    <Container>
+      <div class="grid">
+        <div class="copy">
+          <p class="pill">
+            <FlagItaly size={28} />
+            <span>Coming soon</span>
+          </p>
+
+          <h1 class="title">
+            Next stop: Italy<Sparkle class="title-sparkle" size={34} color="var(--coral)" />
+          </h1>
+
+          <p class="body">
+            The pizza you were making anyway becomes a trip to Naples. Kids roll
+            the dough, earn their passport stamp, and you get to be the loudest
+            Italian at the table. <em>(Terrible accents strongly encouraged.)</em>
+          </p>
+
+          <KitForm
+            kitAction={waitlistAction}
+            buttonText="Save my seat to Italy"
+            successHeadline="You're on the list!"
+            successBody="Check your inbox to confirm and grab your free passport. We'll email you the moment Italy lands."
+            smallPrint="No spam. Just good stuff for curious families."
+            privacyLink
+            submitEvent="italy_waitlist_submit"
+            location="italy_page"
+            tone="light"
+            stacked
+            inputId="italy-email"
+            formLabel="Italy waitlist signup"
+          >
+            <p class="lead">
+              Join the waitlist and get your free Kids' Passport today, so Italy
+              has a page waiting for it.
+            </p>
+          </KitForm>
+
+          {import.meta.env.DEV && !waitlistReady && (
+            <p class="setup-note">
+              ⚙️ Setup: paste the Italy Kit form action URL into
+              <code>src/content/products/around-the-world/countries/italy.json</code>
+              → <code>waitlistKitAction</code>.
+            </p>
+          )}
+        </div>
+
+        <div class="media">
+          <Image class="d-plane" src={planeTrail} alt="" widths={[268, 536]} sizes="268px" aria-hidden="true" />
+          <Sparkle class="d-sparkle-a" size={30} color="var(--coral)" />
+          <Sparkle class="d-sparkle-b" size={20} color="var(--teal)" />
+          <div class="frame">
+            {heroImage && (
+              <Image src={heroImage} alt="Kids spinning a globe on a gingham table set for an Italian night, with their printed passports"
+                     widths={[400, 600, 900]} sizes="(max-width: 900px) 360px, 440px"
+                     loading="eager" />
+            )}
+          </div>
+          <Heart class="d-heart" size={30} />
+        </div>
+      </div>
+    </Container>
+  </section>
+
+  <!-- B) What's coming -->
+  <section class="it-coming" data-analytics-view="italy_coming">
+    <Container>
+      <header class="head">
+        <h2>
+          <Image class="ray" src={raysL} alt="" widths={[30, 60]} sizes="30px" aria-hidden="true" />
+          <span>What's coming</span>
+          <Image class="ray" src={raysR} alt="" widths={[32, 64]} sizes="32px" aria-hidden="true" />
+        </h2>
+      </header>
+
+      <ul class="cards">
+        <li>
+          {passportImage && (
+            <Image class="thumb" src={passportImage} alt="" widths={[300, 600]}
+                   sizes="(max-width: 620px) 120px, 340px" />
+          )}
+          <span>A new passport stamp</span>
+        </li>
+        <li>
+          {activityImage && (
+            <Image class="thumb" src={activityImage} alt="" widths={[300, 600]}
+                   sizes="(max-width: 620px) 120px, 340px" />
+          )}
+          <span>Fun games where you're the equipment</span>
+        </li>
+        <li>
+          {foodImage ? (
+            <Image class="thumb" src={foodImage} alt="" widths={[300, 600]}
+                   sizes="(max-width: 620px) 120px, 340px" />
+          ) : (
+            <div class="thumb icon-tile" aria-hidden="true">
+              <Icon name="chef" size={64} color="var(--navy)" />
+            </div>
+          )}
+          <span>Dinner you'd cook anyway, renamed Italian</span>
+        </li>
+      </ul>
+    </Container>
+  </section>
+
+  <!-- C) Norway, available now -->
+  <section class="it-norway" data-analytics-view="italy_norway">
+    <Container>
+      <div class="card">
+        <div class="media">
+          {norwayImage && (
+            <Image class="pack" src={norwayImage}
+                   alt={`What's inside the ${norway.name} adventure pack`}
+                   widths={[400, 700, 900]} sizes="(max-width: 900px) 70vw, 36vw" />
+          )}
+        </div>
+
+        <div class="copy">
+          <p class="pill pill-ready">
+            <FlagNorway size={28} />
+            <span>Ready now</span>
+          </p>
+          <h2>Can't wait? {norway.name} is ready now.</h2>
+          <p class="body">
+            Our first stop is open for boarding. Salmon you'd cook anyway becomes
+            Catch of the Fjord, plus crafts, games, and a passport stamp to
+            collect. Instant download, print at home.
+          </p>
+
+          <div class="buy">
+            {priceStr && (
+              <div class="price">
+                {norway.priceLabel && <p class="eyebrow">{norway.priceLabel}</p>}
+                <p class="amount">${priceStr}</p>
+              </div>
+            )}
+            <Button href={buyHref} class="cta" checkout={buyReady}
+                    data-analytics-event="cta_italy_page_norway" data-analytics-location="italy_page"
+                    data-analytics-country={norway.name.toLowerCase()}>
+              Take my family to {norway.name} <span aria-hidden="true">→</span>
+            </Button>
+          </div>
+        </div>
+      </div>
+    </Container>
+  </section>
+</BaseLayout>
+
+<style>
+  /* ---------- shared ---------- */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: var(--sky);
+    color: var(--navy);
+    border-radius: 999px;
+    padding: 0.35rem 1.1rem 0.35rem 0.45rem;
+    margin: 0 0 1rem;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 0.82rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .pill-ready { background: var(--sand); }
+  .body {
+    color: var(--navy-soft);
+    font-size: clamp(1rem, 1.2vw, 1.12rem);
+    line-height: 1.55;
+    max-width: 46ch;
+  }
+
+  /* ---------- A) hero ---------- */
+  .it-hero {
+    background: #fdfbf5;
+    padding-block: clamp(1.75rem, 4vw, 3.5rem) clamp(2.5rem, 5vw, 4.5rem);
+    overflow: hidden;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(2rem, 5vw, 4.5rem);
+    align-items: center;
+  }
+  .title {
+    font-family: var(--font-display);
+    font-size: clamp(2.4rem, 5vw, 3.85rem);
+    line-height: 1.04;
+    letter-spacing: -0.015em;
+    margin: 0 0 0.8rem;
+  }
+  .title :global(.title-sparkle) { margin-left: 0.25em; vertical-align: 0.35em; width: 0.55em; height: 0.55em; }
+  .body em { font-style: italic; color: var(--navy); }
+  .lead {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: clamp(1.05rem, 1.5vw, 1.25rem);
+    line-height: 1.35;
+    color: var(--navy);
+    margin: 1.4rem 0 0;
+    max-width: 30em;
+  }
+  /* The form's own top margin is sized for a centred section; tighten it
+     under the lead line here. */
+  .copy :global(.kit) { margin-top: 1rem; max-width: 30rem; }
+  .copy :global(.hint) { margin-top: 0.9rem; }
+
+  /* Portrait photo: cap the width so the frame stays about as tall as the copy. */
+  .media { position: relative; width: 100%; max-width: 440px; justify-self: center; }
+  .frame {
+    background: #fff;
+    border-radius: 30px;
+    padding: 13px;
+    box-shadow: 0 18px 40px -22px rgba(31, 61, 90, 0.5);
+    transform: rotate(2deg);
+  }
+  .frame :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border-radius: 20px;
+  }
+  /* Same illustrated plane trail as the homepage hero, riding above the frame. */
+  .media :global(.d-plane) { position: absolute; left: 4%; top: -2.9rem; width: 62%; height: auto; z-index: 1; }
+  .media :global(.d-sparkle-a) { position: absolute; right: -2%; top: -8%; }
+  .media :global(.d-sparkle-b) { position: absolute; left: -5%; bottom: 18%; }
+  .media :global(.d-heart) { position: absolute; right: 6%; bottom: -6%; }
+
+  .setup-note {
+    margin-top: 1rem;
+    font-size: 0.82rem;
+    color: #8a3a26;
+    background: rgba(255, 177, 153, 0.18);
+    border: 1px dashed var(--coral-deep);
+    border-radius: 10px;
+    padding: 0.6rem 0.8rem;
+  }
+
+  /* ---------- B) what's coming ---------- */
+  .it-coming {
+    background: var(--cream);
+    padding-block: clamp(2.5rem, 5vw, 4rem);
+  }
+  .head { text-align: center; margin-bottom: clamp(1.2rem, 2.4vw, 1.9rem); }
+  .head h2 {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.85rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 2.9vw, 2.4rem);
+    margin: 0;
+  }
+  .head :global(.ray) { flex: none; width: clamp(18px, 1.8vw, 30px); height: auto; }
+
+  /* Same card treatment as "What's inside" on the homepage. */
+  .cards {
+    list-style: none;
+    padding: 0;
+    margin: 0 auto;
+    max-width: 960px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(0.75rem, 1.6vw, 1.25rem);
+  }
+  .cards li {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    text-align: center;
+    background: #fff;
+    border-radius: 14px;
+    padding: 0.8rem 0.8rem 1.1rem;
+    box-shadow: 0 10px 22px -18px rgba(31, 61, 90, 0.5);
+  }
+  .cards :global(.thumb) {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+  .icon-tile {
+    display: grid;
+    place-items: center;
+    background: rgba(241, 213, 183, 0.6);
+  }
+  .cards span {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(0.95rem, 1.2vw, 1.08rem);
+    line-height: 1.3;
+    color: var(--navy);
+  }
+
+  /* ---------- C) Norway ---------- */
+  .it-norway {
+    background: var(--sky);
+    padding-block: clamp(2.5rem, 6vw, 5rem);
+  }
+  .card {
+    display: grid;
+    grid-template-columns: minmax(0, 0.65fr) minmax(0, 1fr);
+    gap: clamp(1.5rem, 4vw, 3.5rem);
+    align-items: center;
+    background: #fff;
+    border-radius: 28px;
+    padding: clamp(1.25rem, 3.5vw, 3rem);
+    box-shadow: var(--shadow);
+    max-width: 1000px;
+    margin-inline: auto;
+  }
+  .card :global(.pack) { width: 100%; height: auto; transform: rotate(-1.5deg); }
+  .card h2 { font-family: var(--font-display); margin: 0 0 0.6rem; }
+
+  .buy {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: clamp(0.9rem, 2vw, 1.75rem);
+    background: var(--cream);
+    border-radius: 18px;
+    padding: 0.9rem 1.25rem;
+    margin-top: 1.25rem;
+  }
+  .price { flex: none; padding-right: clamp(0.8rem, 1.8vw, 1.5rem); border-right: 1px solid rgba(31, 61, 90, 0.16); }
+  .eyebrow {
+    margin: 0;
+    color: var(--navy);
+    font-family: var(--font-head);
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  .amount {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2rem, 3.2vw, 2.8rem);
+    line-height: 1;
+    color: var(--navy);
+  }
+  .buy :global(.cta) { flex: 1; justify-content: center; white-space: nowrap; padding-inline: 1.2rem; }
+
+  /* ---------- responsive (mobile-first visitors from Instagram) ---------- */
+  @media (max-width: 900px) {
+    .grid { grid-template-columns: 1fr; }
+    /* Copy and form stay first, so the signup is reachable without scrolling
+       past a photo. */
+    .media { max-width: 360px; margin: 0.5rem auto 0; width: 100%; }
+    .card { grid-template-columns: 1fr; padding: 1.25rem 1rem 1rem; }
+    .card .media { max-width: 300px; margin: 0 auto; }
+    .buy { flex-direction: column; align-items: stretch; text-align: center; }
+    .buy { padding: 0.9rem 0.75rem; }
+    .price { padding-right: 0; padding-bottom: 0.6rem; border-right: 0; border-bottom: 1px solid rgba(31, 61, 90, 0.16); }
+  }
+  @media (max-width: 620px) {
+    .head h2 { gap: 0.5rem; }
+    /* Horizontal cards: thumbnail beside the caption keeps the row short. */
+    .cards { grid-template-columns: 1fr; max-width: 30rem; }
+    .cards li { flex-direction: row; text-align: left; padding: 0.6rem; gap: 0.9rem; }
+    .cards :global(.thumb) { flex: none; width: 120px; }
+    .media :global(.d-plane) { display: none; }
+  }
+</style>

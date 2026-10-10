@@ -2,9 +2,16 @@
 import { getEntry } from "astro:content";
 import Container from "../ui/Container.astro";
 import Button from "../ui/Button.astro";
+import FlagItaly from "../doodles/FlagItaly.astro";
 
 const brand = await getEntry("brand", "site");
 const { name, nav } = brand.data;
+
+// Waitlist link while Italy is coming soon. Hidden on the waitlist page
+// itself, and disappears on its own once italy.json stops being "coming-soon".
+const italy = await getEntry("countries", "italy");
+const onItalyPage = Astro.url.pathname.replace(/\/+$/, "") === "/italy";
+const showItalyLink = italy?.data.status === "coming-soon" && !onItalyPage;
 ---
 
 <header class="site-header">
@@ -19,9 +26,15 @@ const { name, nav } = brand.data;
           <a href={item.href} data-analytics-event="nav_click" data-analytics-location="header"
              data-analytics-target={item.href.split("#")[1] ?? item.href}>{item.label}</a>
         ))}
+        {showItalyLink && (
+          <a href="/italy" class="nav-italy" data-analytics-event="nav_click"
+             data-analytics-location="header" data-analytics-target="italy_waitlist">
+            <FlagItaly size={20} /><span><span class="long">Join the </span>Italy waitlist</span>
+          </a>
+        )}
       </nav>
 
-      <span class="header-cta"><Button href="/#signup" data-analytics-event="nav_join_our_world" data-analytics-location="header">Join our world →</Button></span>
+      <span class="header-cta"><Button href="/#signup" data-analytics-event="nav_free_passport" data-analytics-location="header">Get the free passport →</Button></span>
 
       <button class="menu-toggle" aria-label="Open menu" aria-expanded="false"
               data-analytics-event="nav_menu_open">
@@ -77,6 +90,29 @@ const { name, nav } = brand.data;
     text-decoration: none;
   }
   .nav a:hover { color: var(--coral-deep); }
+  .nav .nav-italy {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-weight: 600;
+    background: color-mix(in srgb, var(--sky) 55%, transparent);
+    border-radius: 999px;
+    padding: 0.2rem 0.8rem 0.2rem 0.45rem;
+    margin-block: -0.2rem;
+    white-space: nowrap;
+  }
+  /* Narrow desktop: five links plus the CTA only fit with a shorter label. */
+  @media (min-width: 861px) and (max-width: 1100px) {
+    .nav { gap: 1.1rem; }
+    .nav a { white-space: nowrap; }
+    .nav .nav-italy .long { display: none; }
+    .bar .header-cta :global(.btn) { padding-inline: 1.1rem; }
+  }
+  @media (min-width: 861px) and (max-width: 960px) {
+    .nav { gap: 0.85rem; }
+    .nav a { font-size: 0.9rem; }
+  }
+  .bar .header-cta :global(.btn) { white-space: nowrap; }
   .menu-toggle { display: none; }
 
   @media (max-width: 860px) {
@@ -93,6 +129,7 @@ const { name, nav } = brand.data;
     }
     .nav.open { display: flex; }
     .nav a { padding-block: 0.6rem; }
+    .nav .nav-italy { align-self: flex-start; margin-block: 0.35rem 0; padding-block: 0.45rem; }
     .bar .header-cta :global(.btn) {
       min-height: 38px;
       padding-inline: 1.05rem;
